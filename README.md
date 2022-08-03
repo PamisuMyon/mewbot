@@ -1,9 +1,11 @@
 # mewbot
+[![](https://img.shields.io/badge/dynamic/json?color=%234279ea&label=Mew%20Online%20🤖&prefix=%E6%88%90%E5%91%98%20&query=%24.member_count&url=https%3A%2F%2Fapi.mew.fun%2Fapi%2Fv1%2Fnodes%2Fnot_a_robot&labelColor=30549f)](https://mew.fun/n/not_a_robot)
+[![](https://img.shields.io/npm/v/mewbot.svg?maxAge=3600)](https://www.npmjs.com/package/mewbot)
 
 mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更轻松地与Mew的API交互，搭建自己的bot。
 核心功能：
 - 简单易用且稳定的消息监听（WebSocket交互封装）
-- bot所需API，如发送各类消息、想法、评论等等。
+- bot所需API，包含消息、想法、评论、据点等相关的常用API
 
 ## 快速上手
 
@@ -72,81 +74,11 @@ logger.logLevel = LogLevel.Verbose;
 ```
 
 ## 常见问题
-
-### 如何授权
-官方暂未提供token获取方式，也没有bot专用的token，目前有两种方式取得授权：
-
-#### 使用Fiddler、Charles等工具手动抓取
-已登录状态下，做一些需要授权的操作（例如发送一条消息），找到相应记录，在Authentication处获取Token：
-![token](https://s2.loli.net/2022/08/03/GeoVTkn2Cg91hw6.jpg)
-
-代码中通过`setToken`方法设置（不需要"Bearer "部分）:
-```javascript
-client.setToken('你的Token');
-```
-
-暂不清楚该token的有效期与相应的刷新接口，从实际使用来看有效期非常长。
-
-#### 使用v1登录接口（不推荐）
-```javascript
-const auth = await this._client.login('账号', '密码');
-if (auth.data) {
-    logger.debug('Logged in.');
-} else {
-    logger.error('Login failed.');
-    return;
-}
-```
-登录成功后将自动设置授权信息，无需再次调用`setToken`。
-
-官方已不再使用v1登录API，无法确保其长期可用。MewClient中暂时没有做v2登录接口的实现。
-
-### 如何获取据点ID
-网页端进入据点，地址栏后为据点英文或数字ID：
-
-![英文ID](https://s2.loli.net/2022/08/03/SV3xuU7p6qgjcPo.jpg)
-
-**消息订阅必须使用据点的数字ID**，点击右侧据点封面，地址栏将会显示数字ID:
-
-![点击右侧据点封面](https://s2.loli.net/2022/08/03/4NL2nJGH7bU6YDl.jpg)
-
-![数字ID](https://s2.loli.net/2022/08/03/pwUD4Rn7cgFPWBj.jpg)
-
-### 如何获取话题/节点ID
-通过`MewClient.getNodeInfo`方法获取：
-
-```javascript
-import { logger, LogLevel, MewClient } from "mewbot";
-
-(async () => {
-    const client = new MewClient();
-    const result = await client.getNodeInfo('not_a_robot');
-    if (result.data) {
-        console.dir(result.data);
-        for (const topic of result.data.topics) {
-            console.log(`${topic.name} : ${topic.id}`);
-        }
-    } else {
-        console.log('获取据点信息失败')
-    }
-})();
-// 调整日志等级，打印所有日志（可选）
-logger.logLevel = LogLevel.Verbose;
-```
-
-授权不是必要的，仅在获取私密据点中的话题信息时，需要用户已加入该据点，并设置授权。
-
-或者在[不是机器人](https://mew.fun/n/not_a_robot)据点的`🍄`节点中，通过指令`@bot 据点信息 [据点英文ID或数字ID]`来获取：
-
-![据点信息](https://s2.loli.net/2022/08/03/dH4UcxoZLn5elCv.png)
-
-### 有没有现成的bot可以用
-
-请查看示例仓库[mewbot-demo](https://github.com/PamisuMyon/mewbot-demo)，包含一个完整的示例bot实现，配置部署后即可使用，也可以在其基础上扩展。现有功能：
-- 掷骰子
-- 来点猫猫
-- 来点狗狗
-- 查询各类信息
+- [如何取得授权Token](./documents/FAQ.md#如何授权)
+- [如何获取据点ID](./documents/FAQ.md#如何获取据点ID)
+- [如何获取话题/节点ID](./documents/FAQ.md#如何获取话题节点ID)
+- [有现成的bot可以用吗](./documents/FAQ.md#有现成的bot可以用吗)
+- [更多...](./documents/FAQ.md)
 
 ## 文档
 - [MewClient](/documents/Client.md)
@@ -213,3 +145,7 @@ npm run doc
 ```
 
 其他文档需要手动更新。
+
+## TODO
+- 封装图片、长文、视频、链接类型的想法发送方法
+- 补充据点管理相关API
