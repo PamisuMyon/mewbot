@@ -10,7 +10,6 @@ const sleeper = new Sleeper();
 describe('Send message', function () {
     describe('Text message', function () {
         it('should send a text message', async function () {
-            await sleeper.sleep();
             const client = await getMewClient();
             const result = await client?.sendTextMessage(topicId, '🍄');
             if (result?.data) {
@@ -25,7 +24,7 @@ describe('Send message', function () {
             this.timeout(0);
             await sleeper.sleep();
             const client = await getMewClient();
-            const filePath = './test/images/kiss.jpg';
+            const filePath = './test/images/cat.jpg';
             const result = await client?.sendImageMessage(topicId, filePath);
             if (result?.data) {
                 assert.notEqual(result.data, undefined);

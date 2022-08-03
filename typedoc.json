@@ -1,6 +1,6 @@
 {
     "entryPoints": ["src/index.ts"],
-    "out": "docs",
+    "out": "documents/api",
     "plugin": "typedoc-plugin-markdown",
     "excludePrivate": true,
     "disableSources": true,

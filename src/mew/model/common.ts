@@ -1,13 +1,18 @@
 import { Media } from "./message.js";
+import { Thought } from "./thought.js";
 import { Member, User } from "./user.js";
 
 /**
  * 通用的API返回数据类型，用来统一服务端返回值
- * 服务端返回正确结果，则data有值
- * 服务端返回错误结果，则error有值
  */
 export interface Result<T> {
+    /**
+     * 数据，服务端返回正确结果时有值
+     */
     data?: T;
+    /**
+     * 错误，服务端返回错误结果时有值
+     */
     error?: ErrorBody,
 }
 
@@ -15,6 +20,7 @@ export interface CommonObjects {
     media?: Record<string, Media>;
     users?: Record<string, User>;
     members?: Record<string, Member>;
+    thoughts?: Record<string, Thought>;
 }
 
 export interface ErrorBody {

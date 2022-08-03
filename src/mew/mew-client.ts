@@ -5,7 +5,7 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, CommentEngagementData, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, MessageCreateData, MessageDeleteData, MessageEngagementData, Node, NodeMemberAddData, OutgoingMessage, Result, Stamps, STSToken, ThoughtEngagementData, Topic, TopicMessageResult, User, UserTypingData, Thoughts, OutgoingThought, Thought, Embed, Comments, OutgoingComment } from "./model/index.js";
+import { Auth, AuthMode, CommentEngagementData, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, MessageCreateData, MessageDeleteData, MessageEngagementData, Node, NodeMemberAddData, OutgoingMessage, Result, Stamps, STSToken, ThoughtEngagementData, Topic, TopicMessageResult, User, UserTypingData, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
@@ -125,7 +125,7 @@ export class MewClient extends BaseEmitter<{
         };
         if (authMode == AuthMode.NeedAuth) {
             if (!this.hasAuth) {
-                logger.error('No token specified, use login or setToken method to initialize token.');
+                logger.error('No token specified, use setToken or login method to initialize token.');
                 return { error: { name: 'NoTokenError' } };
             }
             options.headers['Authorization'] = `Bearer ${this._auth.token}`;
@@ -151,6 +151,21 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 设置授权Token
+     * 
+     * 官方暂未提供token获取方式，请使用抓包工具自行抓取
+     * @category 授权
+     * @param token 授权token
+     */
+    setToken(token: string) {
+        if (this._auth) {
+            this._auth.token = token;
+        } else {
+            this._auth = { token };
+        }
+    }
+
+    /**
      * 账密登录
      * @category 授权
      * @deprecated 官方已不再使用v1登录API，无法确保其可用性，请使用{@link setToken}替代
@@ -170,21 +185,6 @@ export class MewClient extends BaseEmitter<{
             this._auth = result.data;
         }
         return result;
-    }
-
-    /**
-     * 设置授权Token
-     * 
-     * 官方暂未提供token获取方式，请使用抓包工具自行抓取
-     * @category 授权
-     * @param token 授权token
-     */
-    setToken(token: string) {
-        if (this._auth) {
-            this._auth.token = token;
-        } else {
-            this._auth = { token };
-        }
     }
 
     /**
@@ -219,7 +219,6 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param stamp_id 表情id 参考{@link getStamps}
-     * @returns 
      */
     async sendStampMessage(topic_id: string, stamp_id: string) {
         return await this.sendMessage(topic_id, { stamp: stamp_id });
@@ -258,26 +257,28 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 上传图片
+     * 
      * 参考 [veImageX 图片上传](https://www.volcengine.com/docs/508/67331)
      * @category 媒体
      * @param filePath 文件路径
+     * @param retry 上传重试次数，默认 2
+     * @param retryInterval 重试间隔，默认200
      * @returns 图片信息
      */
-    async uploadImage(filePath: string) {
+    async uploadImage(filePath: string, retry = 2, retryInterval = 200) {
         // 获取sts token
         const token = await this.stsToken();
         if (token.data) {
             // 上传图片
             let upload: any;
-            let retryTimes = 2;
             do {
                 upload = await this.imagexUpload(token.data, filePath);
                 if (!upload) {
-                    logger.debug("Imagex upload failed, retry times: " + retryTimes);
-                    retryTimes--;
-                    await Util.sleep(200);
+                    logger.debug("Imagex upload failed, retry times: " + retry);
+                    retry--;
+                    await Util.sleep(retryInterval);
                 }
-            } while (!upload && retryTimes > 0);
+            } while (!upload && retry > 0);
             if (upload) {
                 // 获取图片信息
                 return await this.getImageInfo(upload.ImageUri);
@@ -286,12 +287,26 @@ export class MewClient extends BaseEmitter<{
         return { error: { name: 'ImagexUploadFailedError' } };
     }
 
-    protected async stsToken() {
+    /**
+     * 获取veImagex上传所需STSToken
+     * 
+     * 通常不需要直接调用此方法，请使用 {@link uploadImage}
+     * @category 媒体
+     */
+    async stsToken() {
         const url = ApiHost + '/api/v1/medias/image/STSToken';
         return await this.request<STSToken>(url);
     }
 
-    protected async imagexUpload(token: any, filePath: string): Promise<any | undefined> {
+    /**
+     * veImagex上传
+     * 
+     * 通常不需要直接调用此方法，请使用 {@link uploadImage}
+     * @category 媒体
+     * @param token STSToken
+     * @param filePath 文件路径
+     */
+    async imagexUpload(token: STSToken, filePath: string): Promise<any | undefined> {
         const imagexService = imagex.defaultService;
         imagexService.setAccessKeyId(token.access_key_id);
         imagexService.setSecretKey(token.secret_access_key);
@@ -391,7 +406,7 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param message_id 消息id
      * @param stamp_id 表情id
-     * @returns 
+     * @returns 返回data为空字符串代表成功
      */
     async deleteMessageReaction(message_id: string, stamp_id: string) {
         const url = ApiHost + `/api/v1/messages/${message_id}/reaction/${stamp_id}`;
@@ -460,31 +475,10 @@ export class MewClient extends BaseEmitter<{
     // TODO 待封装长文、图片、视频、链接想法，可能需要一个builder
 
     /**
-     * 给想法添加情绪
-     * @category 想法
-     * @param though_id 想法id
-     * @param stamp_id 表情id
-     */
-    async addThoughtReaction(though_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
-        return await this.request<string>(url, { method: 'POST' });
-    }
-
-    /**
-     * 取消给想法添加的情绪
-     * @category 想法
-     * @param though_id 想法id
-     * @param stamp_id 表情id
-     */
-    async deleteThoughtReaction(though_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
-        return await this.request<string>(url, { method: 'DELETE' });
-    }
-
-    /**
      * 删除想法
      * @category 想法
      * @param thought_id 想法id
+     * @returns 返回data为空字符串代表成功
      */
     async deleteThought(thought_id: string) {
         const url = ApiHost + `/api/v1/thoughts/${thought_id}`;
@@ -506,12 +500,57 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 给想法添加情绪
+     * @category 想法
+     * @param though_id 想法id
+     * @param stamp_id 表情id
+     * @returns 返回data为空字符串代表成功
+     */
+    async addThoughtReaction(though_id: string, stamp_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
+        return await this.request<string>(url, { method: 'POST' });
+    }
+
+    /**
+     * 取消给想法添加的情绪
+     * @category 想法
+     * @param though_id 想法id
+     * @param stamp_id 表情id
+     * @returns 返回data为空字符串代表成功
+     */
+    async deleteThoughtReaction(though_id: string, stamp_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
+        return await this.request<string>(url, { method: 'DELETE' });
+    }
+
+    /**
+     * 获取想法下评论
+     * 
+     * 传递before=null, after='0' 按时间正序开始获取
+     * 
+     * 传递before=null, after=null 按时间倒序开始获取
+     * @category 想法
+     * @param though_id 想法id
+     * @param limit 数量
+     * @param before 评论id，获取该条评论之后的评论
+     * @param after 评论id，获取该条评论之前的消评论，
+     */
+    async getComments(though_id: string, limit = 20, before?: string, after?: string) {
+        let url = ApiHost + `/api/v1/thoughts/${though_id}/comments?limit=${limit}`;
+        if (before)
+            url += `&before=${before}`;
+        if (after)
+            url += `&after=${after}`;
+        return await this.request<Comments>(url);
+    }
+
+    /**
      * 发表评论
      * @category 想法
      * @param though_id 想法id
      * @param content 文本内容
-     * @param imageFile 图片文件
-     * @param parentId 要回复的评论id
+     * @param imageFile 图片文件 (可选)
+     * @param parentId 要回复的评论id (可选)
      */
     async postComment(though_id: string, content: string, imageFile?: string, parentId?: string): Promise<Result<Comment>>;
 
@@ -553,24 +592,14 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
-     * 获取想法下评论
-     * 
-     * 传递before=null, after='0' 按时间正序开始获取
-     * 
-     * 传递before=null, after=null 按时间倒序开始获取
+     * 删除评论
      * @category 想法
-     * @param though_id 想法id
-     * @param limit 数量
-     * @param before 评论id，获取该条评论之后的评论
-     * @param after 评论id，获取该条评论之前的消评论，
+     * @param comment_id 评论id
+     * @returns 返回data为空字符串代表成功
      */
-    async getComments(though_id: string, limit = 20, before?: string, after?: string) {
-        let url = ApiHost + `/api/v1/thoughts/${though_id}/comments?limit=${limit}`;
-        if (before)
-            url += `&before=${before}`;
-        if (after)
-            url += `&after=${after}`;
-        return await this.request<Comments>(url);
+    async deleteComment(comment_id: string) {
+        const url = ApiHost + `/api/v1/comments/${comment_id}`;
+        return await this.request<string>(url, { method: 'DELETE' });
     }
 
     /**
@@ -578,6 +607,7 @@ export class MewClient extends BaseEmitter<{
      * @category 想法
      * @param comment_id 评论id
      * @param stamp_id 表情id
+     * @returns 返回data为空字符串代表成功
      */
     async addCommentReaction(comment_id: string, stamp_id: string) {
         const url = ApiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;
@@ -589,6 +619,7 @@ export class MewClient extends BaseEmitter<{
      * @category 想法
      * @param comment_id 评论id
      * @param stamp_id 表情id
+     * @returns 返回data为空字符串代表成功
      */
     async deleteCommentReaction(comment_id: string, stamp_id: string) {
         const url = ApiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;

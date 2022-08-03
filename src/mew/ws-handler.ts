@@ -121,14 +121,16 @@ export class WsHandler extends BaseEmitter<{
                 }
             }
     
-            logger.debug('Receive message: ' + data);
             // 心跳
             if (eval(data) == 2) {
+                logger.debug('Receive ❤ : ' + data);
                 this._ws.send(3);
                 this.checkHeartbeat(opt);
-                logger.debug('Send message: ' + 3);
+                logger.debug('Send ❤ : ' + 3);
                 return;
             }
+
+            logger.verbose('Receive message: ' + data);
         });
     
         this._ws.on('error', (err: Error) => {

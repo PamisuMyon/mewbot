@@ -1,11 +1,15 @@
 // 消息相关
 
 import { CommonObjects } from "./common.js";
+import { Embed } from "./thought.js";
 import { Member, User } from "./user.js";
 
 
 // #region From server
 
+/**
+ * 通过HTTP接口获取到的消息数据
+ */
 export interface Message {
     attachments: string[];
     media: string[];
@@ -28,9 +32,18 @@ export interface Message {
     objects?: CommonObjects;
     reactions?: any[];
     // ---经过处理后添加的额外字段---
+    /**
+     * 额外添加字段：用户信息
+     */
     _user?: User;
+    /**
+     * 额外添加字段：媒体信息
+     */
     _media?: Media[];
-    _isDirect?: boolean;    // 是否为私聊消息
+    /**
+     * 额外添加字段：是否为私聊消息
+     */
+    _isDirect?: boolean;
 }
 
 export interface TopicMessageResult {
@@ -91,19 +104,67 @@ export interface UserTypingData {
     member: Member;       // 用户在据点中的成员信息
 }
 
+/**
+ * 通过WebSocket接收的消息创建数据
+ */
 export interface MessageCreateData {
-    id: string;           // 消息id
-    author_id: string;    // 作者id
-    node_id: string;      // 据点id
-    topic_id: string;     // 话题/节点id
-    content?: string;      // 文本内容
-    stamp?: string;        // 表情
-    media: string[];        // 媒体id
+    /**
+     * 消息id
+     */
+    id: string;           
+    /**
+     * 作者id
+     */
+    author_id: string;    
+    /**
+     * 据点id
+     */
+    node_id: string;      
+    /**
+     * 话题/节点id
+     */
+    topic_id: string;     
+    /**
+     * 文本内容
+     */
+    content?: string;     
+    /**
+     * 表情
+     */
+    stamp?: string;       
+    /**
+     * 媒体id
+     */
+    media: string[];      
+    /**
+     * 想法id
+     */
+    thought: string;      
+    attachments?: any[];
+    embeds?: Embed[];
+    mentions?: string[];
+    mention_roles?: any[];
+    mention_everyone: boolean;
+    type: number;
+    parent?: any;
+    nonce?: string;
+    profile_card?: any;
+    created_at: string,
+    edited_at?: string,
     objects: CommonObjects;
     // ---经过处理后添加的额外字段---
-    _user?: User;
-    _media?: Media[];
-    _isDirect?: boolean;    // 是否为私聊消息
+    /**
+     * 额外添加字段：用户信息
+     */
+     _user?: User;
+     /**
+      * 额外添加字段：媒体信息
+      */
+     _media?: Media[];
+     /**
+      * 额外添加字段：是否为私聊消息
+      */
+     _isDirect?: boolean;
 }
 
 export type MessageDeleteData = Message
