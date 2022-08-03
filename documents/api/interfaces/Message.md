@@ -2,6 +2,8 @@
 
 # Interface: Message
 
+通过HTTP接口获取到的消息数据
+
 ## Table of contents
 
 ### Properties
@@ -156,14 +158,20 @@ ___
 
 • `Optional` **\_user**: [`User`](User.md)
 
+额外添加字段：用户信息
+
 ___
 
 ### \_media
 
 • `Optional` **\_media**: [`Media`](Media.md)[]
 
+额外添加字段：媒体信息
+
 ___
 
 ### \_isDirect
 
 • `Optional` **\_isDirect**: `boolean`
+
+额外添加字段：是否为私聊消息
