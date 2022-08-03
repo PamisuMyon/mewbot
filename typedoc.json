@@ -1,0 +1,12 @@
+{
+    "entryPoints": ["src/index.ts"],
+    "out": "docs",
+    "plugin": "typedoc-plugin-markdown",
+    "excludePrivate": true,
+    "disableSources": true,
+    "readme": "none",
+    "sort": "source-order",
+    "categorizeByGroup": false,
+    "categoryOrder": ["授权", "连接", "消息", "想法", "媒体", "据点", "用户", "通用", "*"],
+    "githubPages": false
+}
