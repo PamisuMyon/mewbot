@@ -105,7 +105,7 @@ export class MewClient extends BaseEmitter<{
      * 通用的json请求方法
      * @category 通用
      * @param url url 
-     * @param options 请求配置，参考[got Options]( https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     * @param options 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
      * @param authMode 授权模式，参考{@link AuthMode}
      * @returns 请求结果， 参考{@link Result}
      */

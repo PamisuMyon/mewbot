@@ -2,10 +2,11 @@
 [![](https://img.shields.io/badge/dynamic/json?color=%234279ea&label=Mew%20Online%20🤖&prefix=%E6%88%90%E5%91%98%20&query=%24.member_count&url=https%3A%2F%2Fapi.mew.fun%2Fapi%2Fv1%2Fnodes%2Fnot_a_robot&labelColor=30549f)](https://mew.fun/n/not_a_robot)
 [![](https://img.shields.io/npm/v/mewbot.svg?maxAge=3600)](https://www.npmjs.com/package/mewbot)
 
-mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更轻松地与Mew的API交互，搭建自己的bot。
-核心功能：
-- 简单易用且稳定的消息监听（WebSocket交互封装）
-- bot所需API，包含消息、想法、评论、据点等相关的常用API
+mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更轻松地与Mew的API交互，搭建自己的bot。特点：
+
+- 💬简单易用的且稳定的消息监听（WebSocket API封装、消息解析、事件分发、断线重连）
+- 🔌bot所需的HTTP API，覆盖范围包括据点、话题/节点、想法、评论、消息、情绪、媒体等等，未来会继续补充
+- 📜API文档
 
 ## 快速上手
 
@@ -40,8 +41,9 @@ npm i mewbot
 }
 ```
 
-
 ### 使用
+
+**[getting-started.js](https://github.com/PamisuMyon/mewbot-demo/blob/main/src/starter/-2-getting-started.js)**
 
 ```javascript
 import { logger, LogLevel, MewClient } from "mewbot";
@@ -51,7 +53,7 @@ const subcriptionNodes = ['100554577263091712'];
 // 监听话题/节点ID: '🍄'
 const listenTopics = ['219353468583456768'];
 
-// 创建MewClient并监听事件
+// 创建MewClient并监听'message_create'事件
 const client = new MewClient();
 client.on('message_create', async (data) => {
     console.log('接收到消息：');
@@ -73,6 +75,12 @@ client.connect({ subcriptionNodes });
 logger.logLevel = LogLevel.Verbose;
 ```
 
+这样就实现了一个简单的bot，运行后在🍄节点发送🍅，bot将会回复🥕🥕🥕！
+
+`message_create`事件在收到新消息时触发，可使用多个`client.on`来监听不同类型的事件，[所有事件类型](/documents/Events.md)。
+
+部署在其他据点时，请确保您是目标据点的管理员，或已取得目标据点管理员的同意。
+
 ## 常见问题
 - [如何取得授权Token](./documents/FAQ.md#如何授权)
 - [如何获取据点ID](./documents/FAQ.md#如何获取据点ID)
@@ -83,6 +91,7 @@ logger.logLevel = LogLevel.Verbose;
 ## 文档
 - [MewClient](/documents/Client.md)
 - [事件](/documents/Events.md)
+- [API Doc](/documents/api/README.md)
 
 API使用示例可参考测试代码：
 

@@ -828,7 +828,7 @@ ___
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
 | `url` | `string` | `undefined` | url |
-| `options?` | `any` | `undefined` | 请求配置，参考[got Options]( https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) |
+| `options?` | `any` | `undefined` | 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) |
 | `authMode` | [`AuthMode`](../enums/AuthMode.md) | `AuthMode.NeedAuth` | 授权模式，参考[AuthMode](../enums/AuthMode.md) |
 
 #### Returns
