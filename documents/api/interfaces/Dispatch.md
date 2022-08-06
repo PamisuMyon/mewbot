@@ -2,6 +2,8 @@
 
 # Interface: Dispatch
 
+总分发事件
+
 ## Table of contents
 
 ### Properties
@@ -15,8 +17,12 @@
 
 • **event**: [`DispatchEvent`](../enums/DispatchEvent.md)
 
+事件类型
+
 ___
 
 ### data
 
 • **data**: [`Message`](Message.md) \| [`Member`](Member.md) \| [`Thought`](Thought.md) \| [`Comment`](Comment.md) \| [`UserTyping`](UserTyping.md) \| [`Engagement`](Engagement.md) \| [`NodeMemberActivityChange`](NodeMemberActivityChange.md)
+
+数据

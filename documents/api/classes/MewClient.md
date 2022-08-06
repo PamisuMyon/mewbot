@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-- `BaseEmitter`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\>
+- `BaseEmitter`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\>
 
   ↳ **`MewClient`**
 
@@ -851,7 +851,7 @@ ___
 | `node_id` | `string` | `undefined` | 据点id |
 | `after?` | `string` | `undefined` | 下一页指针，对应结果中的`next_cursor`字段 |
 | `before?` | `string` | `undefined` | 上一页指针，对应结果中的`prev_cursor`字段 |
-| `userWithRelationship` | `boolean` | `false` | - |
+| `userWithRelationship` | `boolean` | `false` | 为true时，填充User对象中的关系字段，例如`following`是否关注与`followed_by`是否关注了我 |
 | `type?` | `string` | `undefined` | 传入'restricted'获取受限成员 |
 | `limit` | `number` | `50` | 数量 |
 
@@ -904,6 +904,98 @@ const hasSpeak = (p & PermissionFlag.Speak) != 0;
 #### Returns
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+
+___
+
+### deleteNodeMember
+
+▸ **deleteNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员移出据点
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `node_id` | `string` | 据点id |
+| `user_id` | `string` | 用户id |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
+### getNodeBans
+
+▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+获取据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `node_id` | `string` | `undefined` | 据点id |
+| `after?` | `string` | `undefined` | 下一页指针 |
+| `before?` | `string` | `undefined` | 上一页指针 |
+| `limit` | `number` | `50` | 数量 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+___
+
+### banNodeMember
+
+▸ **banNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员加入据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `node_id` | `string` |
+| `user_id` | `string` |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
+### unbanNodeMember
+
+▸ **unbanNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员移出据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `node_id` | `string` |
+| `user_id` | `string` |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
 
 ___
 
@@ -1013,14 +1105,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `eventName` | `K` |
-| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`]\> |
+| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`]\> |
 
 #### Returns
 
@@ -1040,14 +1132,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `eventName` | `K` |
-| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`]\> |
+| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`]\> |
 
 #### Returns
 
@@ -1067,14 +1159,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }\> |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `eventName` | `K` |
-| `params` | { `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`] |
+| `params` | { `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../interfaces/NodeMemberActivityChange.md)  }[`K`] |
 
 #### Returns
 
@@ -1113,6 +1205,8 @@ BaseEmitter&lt;{
     message\_delete: Message,
     message\_engagement: Engagement,
     thought\_create: Thought,
+    thought\_update: Thought,
+    thought\_delete: Thought,
     thought\_engagement: Engagement,
     comment\_create: Comment,
     comment\_engagement: Engagement,
@@ -1147,83 +1241,3 @@ ___
 #### Returns
 
 `void`
-
-___
-
-### deleteNodeMember
-
-▸ **deleteNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-将成员移出据点
-
-**🛡管理员**
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `node_id` | `string` | 据点id |
-| `user_id` | `string` | 用户id |
-
-#### Returns
-
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-返回data为空字符串代表成功
-
-___
-
-### getNodeBans
-
-▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
-
-#### Parameters
-
-| Name | Type | Default value |
-| :------ | :------ | :------ |
-| `node_id` | `string` | `undefined` |
-| `after?` | `string` | `undefined` |
-| `before?` | `string` | `undefined` |
-| `limit` | `number` | `50` |
-
-#### Returns
-
-`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
-
-___
-
-### banNodeMember
-
-▸ **banNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `node_id` | `string` |
-| `user_id` | `string` |
-
-#### Returns
-
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-返回data为空字符串代表成功
-
-___
-
-### unbanNodeMember
-
-▸ **unbanNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `node_id` | `string` |
-| `user_id` | `string` |
-
-#### Returns
-
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
-
-返回data为空字符串代表成功

@@ -9,6 +9,8 @@
 - [用户](Client.md#用户)
 - [通用](Client.md#通用)
 
+*带有 **🛡管理员** 标记的API需要管理权限。
+
 ## 授权
 
 ### auth
@@ -504,6 +506,50 @@ ___
 
 ___
 
+### sinkThought
+
+▸ **sinkThought**(`thought_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+下沉想法
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `thought_id` | `string` | 想法id |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
+### unsinkThought
+
+▸ **unsinkThought**(`thought_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+取消下沉想法
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `thought_id` | `string` | 想法id |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
 ### getComments
 
 ▸ **getComments**(`though_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Comments`](./api/interfaces/Comments.md)\>\>
@@ -719,6 +765,188 @@ ___
 #### Returns
 
 `Promise`<[`Result`](./api/interfaces/Result.md)<[`Node`](./api/interfaces/Node.md)\>\>
+
+___
+
+### modifyNodeInfo
+
+▸ **modifyNodeInfo**(`node_id`, `info`): `Promise`<[`Result`](../interfaces/Result.md)<[`Node`](../interfaces/Node.md)\>\>
+
+修改据点信息
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `node_id` | `string` | 据点id （数字或英文id，非MewCode） |
+| `info` | [`OutgoingNode`](../interfaces/OutgoingNode.md) | 据点信息 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Node`](../interfaces/Node.md)\>\>
+
+___
+
+### getNodeMembers
+
+▸ **getNodeMembers**(`node_id`, `after?`, `before?`, `userWithRelationship?`, `type?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+获取据点成员列表
+
+#### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `node_id` | `string` | `undefined` | 据点id |
+| `after?` | `string` | `undefined` | 下一页指针，对应结果中的`next_cursor`字段 |
+| `before?` | `string` | `undefined` | 上一页指针，对应结果中的`prev_cursor`字段 |
+| `userWithRelationship` | `boolean` | `false` | 为true时，填充User对象中的关系字段，例如`following`是否关注与`followed_by`是否关注了我 |
+| `type?` | `string` | `undefined` | 传入'restricted'获取受限成员 |
+| `limit` | `number` | `50` | 数量 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+___
+
+### getNodeMember
+
+▸ **getNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+
+获取据点单个成员
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `node_id` | `string` | 据点id |
+| `user_id` | `string` | 用户id |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+
+___
+
+### modifyNodeMemberPermission
+
+▸ **modifyNodeMemberPermission**(`node_id`, `user_id`, `permissions_deny`): `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+
+修改据点成员权限，例如参与讨论、发表想法、发表评论
+
+```javascript
+const p = PermissionFlag.Speak | PermissionFlag.Comment;
+const hasSpeak = (p & PermissionFlag.Speak) != 0;
+```
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `node_id` | `string` | 据点id |
+| `user_id` | `string` | 用户id |
+| `permissions_deny` | `number` | 禁用的权限Flag 使用位运算组合 参照[PermissionFlag](../enums/PermissionFlag.md), 传入0解除所有限制 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+
+___
+
+### deleteNodeMember
+
+▸ **deleteNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员移出据点
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `node_id` | `string` | 据点id |
+| `user_id` | `string` | 用户id |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
+### getNodeBans
+
+▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+获取据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `node_id` | `string` | `undefined` | 据点id |
+| `after?` | `string` | `undefined` | 下一页指针 |
+| `before?` | `string` | `undefined` | 上一页指针 |
+| `limit` | `number` | `50` | 数量 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+
+___
+
+### banNodeMember
+
+▸ **banNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员加入据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `node_id` | `string` |
+| `user_id` | `string` |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
+### unbanNodeMember
+
+▸ **unbanNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+将成员移出据点黑名单
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `node_id` | `string` |
+| `user_id` | `string` |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
 
 ___
 

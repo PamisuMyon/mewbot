@@ -11,6 +11,8 @@
 - [MessageDelete](DispatchEvent.md#messagedelete)
 - [MessageEngagement](DispatchEvent.md#messageengagement)
 - [ThoughtCreate](DispatchEvent.md#thoughtcreate)
+- [ThoughtUpdate](DispatchEvent.md#thoughtupdate)
+- [ThoughtDelete](DispatchEvent.md#thoughtdelete)
 - [ThoughtEngagement](DispatchEvent.md#thoughtengagement)
 - [CommentCreate](DispatchEvent.md#commentcreate)
 - [CommentEngagement](DispatchEvent.md#commentengagement)
@@ -48,6 +50,18 @@ ___
 ### ThoughtCreate
 
 • **ThoughtCreate** = ``"thought_create"``
+
+___
+
+### ThoughtUpdate
+
+• **ThoughtUpdate** = ``"thought_update"``
+
+___
+
+### ThoughtDelete
+
+• **ThoughtDelete** = ``"thought_delete"``
 
 ___
 

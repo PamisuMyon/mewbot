@@ -16,6 +16,8 @@ export class MewClient extends BaseEmitter<{
     message_delete: Message,
     message_engagement: Engagement,
     thought_create: Thought,
+    thought_update: Thought,
+    thought_delete: Thought,
     thought_engagement: Engagement,
     comment_create: Comment,
     comment_engagement: Engagement,
@@ -75,6 +77,12 @@ export class MewClient extends BaseEmitter<{
             break;
         case DispatchEvent.ThoughtCreate:
             this.emit('thought_create', dispatch.data as Thought);
+            break;
+        case DispatchEvent.ThoughtUpdate:
+            this.emit('thought_update', dispatch.data as Thought);
+            break;
+        case DispatchEvent.ThoughtDelete:
+            this.emit('thought_delete', dispatch.data as Thought);
             break;
         case DispatchEvent.ThoughtEngagement:
             this.emit('thought_engagement', dispatch.data as Engagement);
@@ -600,6 +608,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 发表评论
+     * 
      * @category 想法
      * @param though_id 想法id
      * @param content 文本内容
@@ -610,6 +619,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 发表评论
+     * 
      * @category 想法
      * @param though_id 想法id 
      * @param comment 评论
@@ -647,6 +657,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 删除评论
+     * 
      * @category 想法
      * @param comment_id 评论id
      * @returns 返回data为空字符串代表成功
@@ -713,7 +724,7 @@ export class MewClient extends BaseEmitter<{
      * @param node_id 据点id
      * @param after 下一页指针，对应结果中的`next_cursor`字段
      * @param before 上一页指针，对应结果中的`prev_cursor`字段
-     * @param userWithRelationShip 为true时，填充User对象中的关系字段，例如`following`是否关注与`followed_by`是否关注了我
+     * @param userWithRelationship 为true时，填充User对象中的关系字段，例如`following`是否关注与`followed_by`是否关注了我
      * @param type 传入'restricted'获取受限成员
      * @param limit 数量
      */
@@ -772,6 +783,7 @@ export class MewClient extends BaseEmitter<{
      * 将成员移出据点
      * 
      * **🛡管理员**
+     * @category 据点
      * @param node_id 据点id
      * @param user_id 用户id
      * @returns 返回data为空字符串代表成功
@@ -781,6 +793,16 @@ export class MewClient extends BaseEmitter<{
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
+    /**
+     * 获取据点黑名单
+     * 
+     * **🛡管理员**
+     * @category 据点
+     * @param node_id 据点id
+     * @param after 下一页指针
+     * @param before 上一页指针
+     * @param limit 数量
+     */
     async getNodeBans(node_id: string, after?: string, before?: string, limit = 50) {
         const url = ApiHost + `/api/v1/nodes/${node_id}/bans`;
         const options: any = {
@@ -795,7 +817,10 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 将成员加入据点黑名单
      * 
+     * **🛡管理员**
+     * @category 据点
      * @param node_id 
      * @param user_id 
      * @returns 返回data为空字符串代表成功
@@ -806,7 +831,10 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 将成员移出据点黑名单
      * 
+     * **🛡管理员**
+     * @category 据点
      * @param node_id 
      * @param user_id 
      * @returns 返回data为空字符串代表成功

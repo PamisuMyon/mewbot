@@ -10,6 +10,8 @@ export enum DispatchEvent {
     MessageDelete = 'message_delete',
     MessageEngagement = 'message_engagement',
     ThoughtCreate = 'thought_create',
+    ThoughtUpdate = 'thought_update',
+    ThoughtDelete = 'thought_delete',
     ThoughtEngagement = 'thought_engagement',
     CommentCreate = 'comment_create',
     CommentEngagement = 'comment_engagement',
@@ -19,8 +21,17 @@ export enum DispatchEvent {
     NodeMemberActivityChange = 'node_member_activity_change',
 }
 
+/**
+ * 总分发事件
+ */
 export interface Dispatch {
+    /**
+     * 事件类型
+     */
     event: DispatchEvent;
+    /**
+     * 数据
+     */
     data: UserTyping | Message | Thought | Comment | Engagement | Member | NodeMemberActivityChange;
 }
 
@@ -62,23 +73,25 @@ export interface Media {
  * 消息、想法、评论情绪变化
  */
 export interface Engagement {
+    node_id?: string;
     topic_id?: string;
-    message_id?: string;
     thought_id?: string;
     comment_id?: string;
-    user_id: string;
+    comment_count?: string;
+    message_id?: string;
+    user_id?: string;
     /**
      * 情绪id
      */
-    stamp_id: string;
+    stamp_id?: string;
     /**
      * 数量
      */
-    count: number;
+    count?: number;
     /**
      * `1`增加 `-1`减少 
      */
-    type: number;
+    type?: number;
 }
 
 export interface NodeMemberActivityChange {

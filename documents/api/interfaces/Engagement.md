@@ -8,10 +8,12 @@
 
 ### Properties
 
+- [node\_id](Engagement.md#node_id)
 - [topic\_id](Engagement.md#topic_id)
-- [message\_id](Engagement.md#message_id)
 - [thought\_id](Engagement.md#thought_id)
 - [comment\_id](Engagement.md#comment_id)
+- [comment\_count](Engagement.md#comment_count)
+- [message\_id](Engagement.md#message_id)
 - [user\_id](Engagement.md#user_id)
 - [stamp\_id](Engagement.md#stamp_id)
 - [count](Engagement.md#count)
@@ -19,15 +21,15 @@
 
 ## Properties
 
-### topic\_id
+### node\_id
 
-• `Optional` **topic\_id**: `string`
+• `Optional` **node\_id**: `string`
 
 ___
 
-### message\_id
+### topic\_id
 
-• `Optional` **message\_id**: `string`
+• `Optional` **topic\_id**: `string`
 
 ___
 
@@ -43,15 +45,27 @@ ___
 
 ___
 
+### comment\_count
+
+• `Optional` **comment\_count**: `string`
+
+___
+
+### message\_id
+
+• `Optional` **message\_id**: `string`
+
+___
+
 ### user\_id
 
-• **user\_id**: `string`
+• `Optional` **user\_id**: `string`
 
 ___
 
 ### stamp\_id
 
-• **stamp\_id**: `string`
+• `Optional` **stamp\_id**: `string`
 
 情绪id
 
@@ -59,7 +73,7 @@ ___
 
 ### count
 
-• **count**: `number`
+• `Optional` **count**: `number`
 
 数量
 
@@ -67,6 +81,6 @@ ___
 
 ### type
 
-• **type**: `number`
+• `Optional` **type**: `number`
 
 `1`增加 `-1`减少
