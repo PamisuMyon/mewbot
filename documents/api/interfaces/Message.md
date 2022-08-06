@@ -2,77 +2,49 @@
 
 # Interface: Message
 
-通过HTTP接口获取到的消息数据
+消息
 
 ## Table of contents
 
 ### Properties
 
-- [attachments](Message.md#attachments)
+- [id](Message.md#id)
+- [author\_id](Message.md#author_id)
+- [node\_id](Message.md#node_id)
+- [topic\_id](Message.md#topic_id)
+- [content](Message.md#content)
+- [stamp](Message.md#stamp)
 - [media](Message.md#media)
+- [thought](Message.md#thought)
+- [thread](Message.md#thread)
+- [attachments](Message.md#attachments)
 - [embeds](Message.md#embeds)
 - [mentions](Message.md#mentions)
 - [mention\_roles](Message.md#mention_roles)
-- [node\_id](Message.md#node_id)
-- [topic\_id](Message.md#topic_id)
-- [author\_id](Message.md#author_id)
-- [type](Message.md#type)
-- [content](Message.md#content)
-- [thought](Message.md#thought)
 - [mention\_everyone](Message.md#mention_everyone)
+- [type](Message.md#type)
 - [parent](Message.md#parent)
 - [nonce](Message.md#nonce)
-- [stamp](Message.md#stamp)
+- [profile\_card](Message.md#profile_card)
 - [created\_at](Message.md#created_at)
 - [edited\_at](Message.md#edited_at)
-- [id](Message.md#id)
-- [objects](Message.md#objects)
+- [triggered\_thought](Message.md#triggered_thought)
+- [first\_be\_replied](Message.md#first_be_replied)
+- [reply\_to\_message\_id](Message.md#reply_to_message_id)
+- [root\_message\_id](Message.md#root_message_id)
 - [reactions](Message.md#reactions)
+- [objects](Message.md#objects)
 - [\_user](Message.md#_user)
 - [\_media](Message.md#_media)
 - [\_isDirect](Message.md#_isdirect)
 
 ## Properties
 
-### attachments
+### id
 
-• **attachments**: `string`[]
+• **id**: `string`
 
-___
-
-### media
-
-• **media**: `string`[]
-
-___
-
-### embeds
-
-• **embeds**: `string`[]
-
-___
-
-### mentions
-
-• **mentions**: `string`[]
-
-___
-
-### mention\_roles
-
-• **mention\_roles**: `string`[]
-
-___
-
-### node\_id
-
-• `Optional` **node\_id**: `string`
-
-___
-
-### topic\_id
-
-• **topic\_id**: `string`
+消息id
 
 ___
 
@@ -80,11 +52,23 @@ ___
 
 • **author\_id**: `string`
 
+作者id
+
 ___
 
-### type
+### node\_id
 
-• **type**: `number`
+• **node\_id**: `string`
+
+据点id
+
+___
+
+### topic\_id
+
+• **topic\_id**: `string`
+
+话题/节点id
 
 ___
 
@@ -92,17 +76,73 @@ ___
 
 • `Optional` **content**: `string`
 
+文本内容
+
+___
+
+### stamp
+
+• `Optional` **stamp**: `string`
+
+表情
+
+___
+
+### media
+
+• **media**: `string`[]
+
+媒体id
+
 ___
 
 ### thought
 
-• `Optional` **thought**: `any`
+• `Optional` **thought**: `string`
+
+想法id
+
+___
+
+### thread
+
+• `Optional` **thread**: `any`
+
+___
+
+### attachments
+
+• `Optional` **attachments**: `any`[]
+
+___
+
+### embeds
+
+• `Optional` **embeds**: [`Embed`](Embed.md)[]
+
+___
+
+### mentions
+
+• `Optional` **mentions**: `string`[]
+
+___
+
+### mention\_roles
+
+• `Optional` **mention\_roles**: `any`[]
 
 ___
 
 ### mention\_everyone
 
 • **mention\_everyone**: `boolean`
+
+___
+
+### type
+
+• **type**: `number`
 
 ___
 
@@ -114,13 +154,13 @@ ___
 
 ### nonce
 
-• **nonce**: `string`
+• `Optional` **nonce**: `string`
 
 ___
 
-### stamp
+### profile\_card
 
-• `Optional` **stamp**: `string`
+• `Optional` **profile\_card**: `any`
 
 ___
 
@@ -136,15 +176,27 @@ ___
 
 ___
 
-### id
+### triggered\_thought
 
-• **id**: `string`
+• `Optional` **triggered\_thought**: `any`
 
 ___
 
-### objects
+### first\_be\_replied
 
-• `Optional` **objects**: [`CommonObjects`](CommonObjects.md)
+• `Optional` **first\_be\_replied**: `any`
+
+___
+
+### reply\_to\_message\_id
+
+• `Optional` **reply\_to\_message\_id**: `string`
+
+___
+
+### root\_message\_id
+
+• `Optional` **root\_message\_id**: `string`
 
 ___
 
@@ -154,9 +206,15 @@ ___
 
 ___
 
+### objects
+
+• **objects**: [`CommonObjects`](CommonObjects.md)
+
+___
+
 ### \_user
 
-• `Optional` **\_user**: [`User`](User.md)
+• **\_user**: [`User`](User.md)
 
 额外添加字段：用户信息
 
@@ -164,14 +222,14 @@ ___
 
 ### \_media
 
-• `Optional` **\_media**: [`Media`](Media.md)[]
+• **\_media**: [`Media`](Media.md)[]
 
-额外添加字段：媒体信息
+额外添加字段：消息正文中包含的媒体信息
 
 ___
 
 ### \_isDirect
 
-• `Optional` **\_isDirect**: `boolean`
+• **\_isDirect**: `boolean`
 
 额外添加字段：是否为私聊消息

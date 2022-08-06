@@ -10,9 +10,13 @@
 - [MessageCreate](DispatchEvent.md#messagecreate)
 - [MessageDelete](DispatchEvent.md#messagedelete)
 - [MessageEngagement](DispatchEvent.md#messageengagement)
+- [ThoughtCreate](DispatchEvent.md#thoughtcreate)
 - [ThoughtEngagement](DispatchEvent.md#thoughtengagement)
+- [CommentCreate](DispatchEvent.md#commentcreate)
 - [CommentEngagement](DispatchEvent.md#commentengagement)
 - [NodeMemberAdd](DispatchEvent.md#nodememberadd)
+- [NodeMemberRemove](DispatchEvent.md#nodememberremove)
+- [NodeMemberBan](DispatchEvent.md#nodememberban)
 - [NodeMemberActivityChange](DispatchEvent.md#nodememberactivitychange)
 
 ## Enumeration Members
@@ -41,9 +45,21 @@ ___
 
 ___
 
+### ThoughtCreate
+
+• **ThoughtCreate** = ``"thought_create"``
+
+___
+
 ### ThoughtEngagement
 
 • **ThoughtEngagement** = ``"thought_engagement"``
+
+___
+
+### CommentCreate
+
+• **CommentCreate** = ``"comment_create"``
 
 ___
 
@@ -56,6 +72,18 @@ ___
 ### NodeMemberAdd
 
 • **NodeMemberAdd** = ``"node_member_add"``
+
+___
+
+### NodeMemberRemove
+
+• **NodeMemberRemove** = ``"node_member_remove"``
+
+___
+
+### NodeMemberBan
+
+• **NodeMemberBan** = ``"node_member_ban"``
 
 ___
 

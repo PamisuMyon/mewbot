@@ -99,6 +99,7 @@ API使用示例可参考测试代码：
 - 消息：[message.test.ts](test/message.test.ts)
 - 想法：[thought.test.ts](test/thought.test.ts)
 - 据点：[node.test.ts](test/node.test.ts)
+- 管理：[manage.test.ts](test/manage.test.ts)
 - 杂项：[misc.test.ts](test/misc.test.ts)
 
 ## 开发

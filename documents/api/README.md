@@ -10,6 +10,7 @@ mewbot
 - [AuthMode](enums/AuthMode.md)
 - [ConnectStatus](enums/ConnectStatus.md)
 - [DispatchEvent](enums/DispatchEvent.md)
+- [PermissionFlag](enums/PermissionFlag.md)
 
 ### Classes
 
@@ -20,10 +21,14 @@ mewbot
 ### Variables
 
 - [logger](README.md#logger)
+- [ApiHost](README.md#apihost)
+- [WsHost](README.md#wshost)
 
 ### Functions
 
 - [setLogger](README.md#setlogger)
+- [getHeaders](README.md#getheaders)
+- [getWsHeaders](README.md#getwsheaders)
 - [initConnectOptions](README.md#initconnectoptions)
 - [refine](README.md#refine)
 
@@ -36,24 +41,24 @@ mewbot
 - [Stamps](interfaces/Stamps.md)
 - [Stamp](interfaces/Stamp.md)
 - [Reaction](interfaces/Reaction.md)
+- [Dispatch](interfaces/Dispatch.md)
+- [UserTyping](interfaces/UserTyping.md)
+- [Media](interfaces/Media.md)
+- [Engagement](interfaces/Engagement.md)
+- [NodeMemberActivityChange](interfaces/NodeMemberActivityChange.md)
 - [Message](interfaces/Message.md)
 - [TopicMessageResult](interfaces/TopicMessageResult.md)
 - [STSToken](interfaces/STSToken.md)
 - [MediaImageInfo](interfaces/MediaImageInfo.md)
-- [Dispatch](interfaces/Dispatch.md)
-- [UserTypingData](interfaces/UserTypingData.md)
-- [MessageCreateData](interfaces/MessageCreateData.md)
-- [Media](interfaces/Media.md)
-- [ThoughtEngagementData](interfaces/ThoughtEngagementData.md)
-- [MessageEngagementData](interfaces/MessageEngagementData.md)
-- [CommentEngagementData](interfaces/CommentEngagementData.md)
-- [NodeMemberAddData](interfaces/NodeMemberAddData.md)
 - [OutgoingMessage](interfaces/OutgoingMessage.md)
 - [Node](interfaces/Node.md)
 - [Mod](interfaces/Mod.md)
 - [Role](interfaces/Role.md)
 - [Joinquestion](interfaces/Joinquestion.md)
 - [Topic](interfaces/Topic.md)
+- [Members](interfaces/Members.md)
+- [Member](interfaces/Member.md)
+- [OutgoingNode](interfaces/OutgoingNode.md)
 - [Thoughts](interfaces/Thoughts.md)
 - [Thought](interfaces/Thought.md)
 - [OutgoingThought](interfaces/OutgoingThought.md)
@@ -65,17 +70,24 @@ mewbot
 - [OutgoingComment](interfaces/OutgoingComment.md)
 - [Auth](interfaces/Auth.md)
 - [User](interfaces/User.md)
-- [Member](interfaces/Member.md)
-
-### Type Aliases
-
-- [MessageDeleteData](README.md#messagedeletedata)
 
 ## Variables
 
 ### logger
 
 • **logger**: [`Logger`](classes/Logger.md)
+
+___
+
+### ApiHost
+
+• `Const` **ApiHost**: ``"https://api.mew.fun"``
+
+___
+
+### WsHost
+
+• `Const` **WsHost**: ``"wss://gateway.mew.fun/socket.io/?EIO=4&transport=websocket"``
 
 ## Functions
 
@@ -92,6 +104,26 @@ mewbot
 #### Returns
 
 `void`
+
+___
+
+### getHeaders
+
+▸ **getHeaders**(): `Record`<`string`, `any`\>
+
+#### Returns
+
+`Record`<`string`, `any`\>
+
+___
+
+### getWsHeaders
+
+▸ **getWsHeaders**(): `Record`<`string`, `any`\>
+
+#### Returns
+
+`Record`<`string`, `any`\>
 
 ___
 
@@ -119,14 +151,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `data` | [`Message`](interfaces/Message.md) \| [`MessageCreateData`](interfaces/MessageCreateData.md) |
+| `data` | [`Message`](interfaces/Message.md) |
 
 #### Returns
 
 `void`
-
-## Type Aliases
-
-### MessageDeleteData
-
-Ƭ **MessageDeleteData**: [`Message`](interfaces/Message.md)

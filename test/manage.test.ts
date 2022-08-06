@@ -1,4 +1,5 @@
 import assert from "assert";
+import { PermissionFlag } from "../src/index.js";
 import { nodes, Sleeper } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
@@ -32,7 +33,30 @@ describe.skip('Node management🏘', function () {
         });
     });
 
-    describe('Member 🙅‍', function () {
+    describe.skip('Member 🙅‍', function () {
+        it('should forbid member from speaking and commenting⛔', async function () {
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const p = PermissionFlag.Speak | PermissionFlag.Comment;
+            const result = await client?.modifyNodeMemberPermission(testNode, dummyUser, p);
+            if (result?.data) {
+                assert.equal(result.data.permissions_deny, p);
+            } else {
+                assert.fail();
+            }
+        });
+
+        it.skip('should allow all permissions of the member⭕', async function () {
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const result = await client?.modifyNodeMemberPermission(testNode, dummyUser, 0);
+            if (result?.data) {
+                assert.equal(result.data.permissions_deny, 0);
+            } else {
+                assert.fail();
+            }
+        });
+
         it.skip('should ban node member🚫', async function () {
             await sleeper.sleep();
             const client = await getMewClient();

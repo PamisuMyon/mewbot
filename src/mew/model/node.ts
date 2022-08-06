@@ -177,7 +177,7 @@ export enum PermissionFlag {
     /**
      * 参与讨论
      */
-    Talk = 1 << 4,
+    Speak = 1 << 4,
     /**
      * 发表想法
      */

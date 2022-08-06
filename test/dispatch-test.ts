@@ -37,15 +37,15 @@ import { getMewClient } from "./my-client.js";
     });
 
     client.on('message_engagement', (data) => {
-        logger.debug('message_engagement: ' + data.message_id);
+        logger.debug(`message_engagement: ${data.message_id} stamp: ${data.stamp_id} count: ${data.count} type: ${data.type}`);
     });
 
     client.on('thought_engagement', (data) => {
-        logger.debug('thought_engagement: ' + data.thought_id);
+        logger.debug(`thought_engagement: ${data.thought_id} stamp: ${data.stamp_id} count: ${data.count} type: ${data.type}`);
     });
 
     client.on('comment_engagement', (data) => {
-        logger.debug('comment_engagement: ' + data.comment_id);
+        logger.debug(`comment_engagement: ${data.comment_id} stamp: ${data.stamp_id} count: ${data.count} type: ${data.type}`);
     });
 
     client.on('node_member_add', (data) => {

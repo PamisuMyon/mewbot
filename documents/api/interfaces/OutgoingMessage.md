@@ -2,6 +2,8 @@
 
 # Interface: OutgoingMessage
 
+发给服务端的消息结构
+
 ## Table of contents
 
 ### Properties

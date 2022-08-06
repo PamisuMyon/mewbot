@@ -2,6 +2,8 @@
 
 # Interface: OutgoingThought
 
+发给服务端的想法结构
+
 ## Table of contents
 
 ### Properties

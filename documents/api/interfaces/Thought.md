@@ -23,6 +23,7 @@
 - [created\_at](Thought.md#created_at)
 - [edited\_at](Thought.md#edited_at)
 - [sunk\_by](Thought.md#sunk_by)
+- [sunl\_at](Thought.md#sunl_at)
 - [id](Thought.md#id)
 - [preview](Thought.md#preview)
 - [like\_count](Thought.md#like_count)
@@ -31,6 +32,7 @@
 - [reactions](Thought.md#reactions)
 - [liked](Thought.md#liked)
 - [bookmarked](Thought.md#bookmarked)
+- [reply\_messages](Thought.md#reply_messages)
 - [objects](Thought.md#objects)
 
 ## Properties
@@ -133,7 +135,13 @@ ___
 
 ### sunk\_by
 
-• `Optional` **sunk\_by**: `any`
+• `Optional` **sunk\_by**: `string`
+
+___
+
+### sunl\_at
+
+• `Optional` **sunl\_at**: `string`
 
 ___
 
@@ -182,6 +190,12 @@ ___
 ### bookmarked
 
 • **bookmarked**: `boolean`
+
+___
+
+### reply\_messages
+
+• **reply\_messages**: `any`[]
 
 ___
 

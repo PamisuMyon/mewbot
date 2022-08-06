@@ -1,4 +1,4 @@
-import { Media } from "./message.js";
+import { Media } from "./dispatch.js";
 import { Member } from "./node.js";
 import { Thought } from "./thought.js";
 import { User } from "./user.js";

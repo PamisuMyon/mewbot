@@ -21,6 +21,7 @@
 - [pinned\_at](Member.md#pinned_at)
 - [node\_id](Member.md#node_id)
 - [user\_id](Member.md#user_id)
+- [objects](Member.md#objects)
 
 ## Properties
 
@@ -111,3 +112,9 @@ ___
 ### user\_id
 
 • **user\_id**: `string`
+
+___
+
+### objects
+
+• `Optional` **objects**: [`CommonObjects`](CommonObjects.md)

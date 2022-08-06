@@ -5,19 +5,24 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, CommentEngagementData, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, MessageCreateData, MessageDeleteData, MessageEngagementData, Node, NodeMemberAddData, OutgoingMessage, Result, Stamps, STSToken, ThoughtEngagementData, Topic, TopicMessageResult, User, UserTypingData, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
     close: void;
     dispatch: Dispatch,
-    user_typing: UserTypingData,
-    message_create: MessageCreateData,
-    message_delete: MessageDeleteData,
-    message_engagement: MessageEngagementData,
-    thought_engagement: ThoughtEngagementData,
-    comment_engagement: CommentEngagementData,
-    node_member_add: NodeMemberAddData,
+    user_typing: UserTyping,
+    message_create: Message,
+    message_delete: Message,
+    message_engagement: Engagement,
+    thought_create: Thought,
+    thought_engagement: Engagement,
+    comment_create: Comment,
+    comment_engagement: Engagement,
+    node_member_add: Member,
+    node_member_remove: Member,
+    node_member_ban: Member,
+    node_member_activity_change: NodeMemberActivityChange,
 }> {
     protected _ws!: WsHandler;
     protected _auth!: Auth;
@@ -57,25 +62,40 @@ export class MewClient extends BaseEmitter<{
         this.emit('dispatch', dispatch);
         switch (dispatch.event) {
         case DispatchEvent.UserTyping:
-            this.emit('user_typing', dispatch.data as UserTypingData);
+            this.emit('user_typing', dispatch.data as UserTyping);
             break;
         case DispatchEvent.MessageCreate:
-            this.emit('message_create', dispatch.data as MessageCreateData);
+            this.emit('message_create', dispatch.data as Message);
             break;
         case DispatchEvent.MessageDelete:
-            this.emit('message_delete', dispatch.data as MessageDeleteData);
+            this.emit('message_delete', dispatch.data as Message);
             break;
         case DispatchEvent.MessageEngagement:
-            this.emit('message_engagement', dispatch.data as MessageEngagementData);
+            this.emit('message_engagement', dispatch.data as Engagement);
+            break;
+        case DispatchEvent.ThoughtCreate:
+            this.emit('thought_create', dispatch.data as Thought);
             break;
         case DispatchEvent.ThoughtEngagement:
-            this.emit('thought_engagement', dispatch.data as ThoughtEngagementData);
+            this.emit('thought_engagement', dispatch.data as Engagement);
+            break;
+        case DispatchEvent.CommentCreate:
+            this.emit('comment_create', dispatch.data as Comment);
             break;
         case DispatchEvent.CommentEngagement:
-            this.emit('comment_engagement', dispatch.data as CommentEngagementData);
+            this.emit('comment_engagement', dispatch.data as Engagement);
             break;
         case DispatchEvent.NodeMemberAdd:
-            this.emit('node_member_add', dispatch.data as NodeMemberAddData);
+            this.emit('node_member_add', dispatch.data as Member);
+            break;
+        case DispatchEvent.NodeMemberRemove:
+            this.emit('node_member_remove', dispatch.data as Member);
+            break;
+        case DispatchEvent.NodeMemberBan:
+            this.emit('node_member_ban', dispatch.data as Member);
+            break;
+        case DispatchEvent.NodeMemberActivityChange:
+            this.emit('node_member_activity_change', dispatch.data as NodeMemberActivityChange);
             break;
         }
     }
@@ -727,14 +747,15 @@ export class MewClient extends BaseEmitter<{
      * 修改据点成员权限，例如参与讨论、发表想法、发表评论
      * 
      * ```javascript
-     * 
+     * const p = PermissionFlag.Speak | PermissionFlag.Comment;
+     * const hasSpeak = (p & PermissionFlag.Speak) != 0;
      * ```
      * 
      * **🛡管理员**
      * @category 据点
      * @param node_id 据点id
      * @param user_id 用户id
-     * @param permissions_deny 禁用的权限Flag 使用位运算组合
+     * @param permissions_deny 禁用的权限Flag 使用位运算组合 参照{@link PermissionFlag}, 传入0解除所有限制
      */
     async modifyNodeMemberPermission(node_id: string, user_id: string, permissions_deny: number) {
         const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;

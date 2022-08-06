@@ -1,16 +1,16 @@
-[mewbot](../README.md) / UserTypingData
+[mewbot](../README.md) / UserTyping
 
-# Interface: UserTypingData
+# Interface: UserTyping
 
 ## Table of contents
 
 ### Properties
 
-- [node\_id](UserTypingData.md#node_id)
-- [topic\_id](UserTypingData.md#topic_id)
-- [user\_id](UserTypingData.md#user_id)
-- [user](UserTypingData.md#user)
-- [member](UserTypingData.md#member)
+- [node\_id](UserTyping.md#node_id)
+- [topic\_id](UserTyping.md#topic_id)
+- [user\_id](UserTyping.md#user_id)
+- [user](UserTyping.md#user)
+- [member](UserTyping.md#member)
 
 ## Properties
 

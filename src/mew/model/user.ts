@@ -25,6 +25,6 @@ export interface User {
     type: number;
     follower_count: number;
     following_count: number;
-    objects: CommonObjects;
+    objects?: CommonObjects;
 }
 

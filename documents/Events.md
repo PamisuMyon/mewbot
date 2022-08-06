@@ -23,13 +23,13 @@ WebSocket连接关闭。
 消息删除（撤回）。
 
 ## `message_engagement`: [`MessageEngagementData`](./api/interfaces/MessageEngagementData.md)
-新消息出现在中枢的跑马灯区。
+消息情绪变化。
 
 ## `thought_engagement`: [`ThoughtEngagementData`](./api/interfaces/ThoughtEngagementData.md)
-想法有新的动态（新想法）。
+想法情绪变化。
 
 ## `comment_engagement`: [`CommentEngagementData`](./api/interfaces/CommentEngagementData.md)
-评论有新的动态（新评论）。
+评论情绪变化。
 
 ## `node_member_add`: [`NodeMemberAddData`](./api/interfaces/NodeMemberAddData.md)
 据点成员加入。

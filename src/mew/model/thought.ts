@@ -91,7 +91,7 @@ export interface Comment {
     mention_roles: any[];
     thought_id: string;
     author_id: string;
-    media: string;
+    media?: string;
     content: string;
     mention_everyone: boolean;
     node_id: string;
@@ -104,6 +104,7 @@ export interface Comment {
     comment_count: number;
     reactions: any[];
     liked: boolean;
+    objects?: CommonObjects;
 }
 
 /**

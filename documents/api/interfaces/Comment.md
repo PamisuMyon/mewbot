@@ -23,6 +23,7 @@
 - [comment\_count](Comment.md#comment_count)
 - [reactions](Comment.md#reactions)
 - [liked](Comment.md#liked)
+- [objects](Comment.md#objects)
 
 ## Properties
 
@@ -52,7 +53,7 @@ ___
 
 ### media
 
-• **media**: `string`
+• `Optional` **media**: `string`
 
 ___
 
@@ -125,3 +126,9 @@ ___
 ### liked
 
 • **liked**: `boolean`
+
+___
+
+### objects
+
+• `Optional` **objects**: [`CommonObjects`](CommonObjects.md)
