@@ -7,9 +7,9 @@ import { getMewClient } from "./my-client.js";
 const topicId = topics["🍄"];
 const sleeper = new Sleeper();
 
-describe('Send message', function () {
-    describe('Text message', function () {
-        it('should send a text message', async function () {
+describe('Send message💬', function () {
+    describe('Text message💬', function () {
+        it('should send a text message💬', async function () {
             const client = await getMewClient();
             const result = await client?.sendTextMessage(topicId, '🍄');
             if (result?.data) {
@@ -19,8 +19,8 @@ describe('Send message', function () {
             }
         });
     });
-    describe('Image message', function () {
-        it('should send a image message', async function () {
+    describe('Image message🖼', function () {
+        it('should send a image message🖼💬', async function () {
             this.timeout(0);
             await sleeper.sleep();
             const client = await getMewClient();
@@ -35,9 +35,9 @@ describe('Send message', function () {
     });
 });
 
-describe('Delete message', function () {
-    describe('Send and delete a text message', function () {
-        it('should send a text message and delete', async function () {
+describe('Delete message🚮', function () {
+    describe('Send and delete a text message🚮', function () {
+        it('should send a text message and delete🚮', async function () {
             this.timeout(0);
             await sleeper.sleep();
             const client = await getMewClient();
@@ -53,9 +53,9 @@ describe('Delete message', function () {
     });
 });
 
-describe('Stamps and Reaction', function() {
+describe('Stamps and Reaction👍', function() {
     let stamps: Stamps;
-    it('should get stamps', async function () {
+    it('should get stamps👍', async function () {
         await sleeper.sleep();
         const client = await getMewClient();
         const result = await client?.getStamps();
@@ -66,7 +66,7 @@ describe('Stamps and Reaction', function() {
             assert.fail();
         }
     });
-    it('should send a message and give it some reactions', async function () {
+    it('should send a message and give it some reactions🤜💬', async function () {
         if (!stamps || stamps.stamps.length == 0) {
             assert.fail();
         }
@@ -87,9 +87,9 @@ describe('Stamps and Reaction', function() {
     });
 });
 
-describe('Get topic messages', function () {
-    describe('With default limit', function () {
-        it('should get messages of the topic', async function () {
+describe('Get topic messages💬', function () {
+    describe('With default limit💬', function () {
+        it('should get messages of the topic💬', async function () {
             await sleeper.sleep();
             const client = await getMewClient(false);
             const result = await client?.getTopicMessages(topicId);

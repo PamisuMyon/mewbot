@@ -5,7 +5,7 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, CommentEngagementData, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, MessageCreateData, MessageDeleteData, MessageEngagementData, Node, NodeMemberAddData, OutgoingMessage, Result, Stamps, STSToken, ThoughtEngagementData, Topic, TopicMessageResult, User, UserTypingData, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment } from "./model/index.js";
+import { Auth, AuthMode, CommentEngagementData, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, MessageCreateData, MessageDeleteData, MessageEngagementData, Node, NodeMemberAddData, OutgoingMessage, Result, Stamps, STSToken, ThoughtEngagementData, Topic, TopicMessageResult, User, UserTypingData, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
@@ -86,7 +86,7 @@ export class MewClient extends BaseEmitter<{
      * @param options 连接选项 
      */
     connect(options: Partial<ConnectOptions>) {
-        this._ws.connect(options);
+        this._ws.connect(options, this._auth);
     }
 
     /**
@@ -502,25 +502,59 @@ export class MewClient extends BaseEmitter<{
     /**
      * 给想法添加情绪
      * @category 想法
-     * @param though_id 想法id
+     * @param thought_id 想法id
      * @param stamp_id 表情id
      * @returns 返回data为空字符串代表成功
      */
-    async addThoughtReaction(though_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
+    async addThoughtReaction(thought_id: string, stamp_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'POST' });
     }
 
     /**
      * 取消给想法添加的情绪
      * @category 想法
-     * @param though_id 想法id
+     * @param thought_id 想法id
      * @param stamp_id 表情id
      * @returns 返回data为空字符串代表成功
      */
-    async deleteThoughtReaction(though_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${though_id}/reaction/${stamp_id}`;
+    async deleteThoughtReaction(thought_id: string, stamp_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
+    }
+
+    /**
+     * 下沉想法
+     * 
+     * **🛡管理员**
+     * @category 想法
+     * @param thought_id 想法id
+     * @returns 返回data为空字符串代表成功
+     */
+    async sinkThought(thought_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/sink`;
+        const options: any = {
+            method: 'POST',
+            json: { sink: true },
+        };
+        return await this.request<string>(url, options);
+    }
+
+    /**
+     * 取消下沉想法
+     * 
+     * **🛡管理员**
+     * @category 想法
+     * @param thought_id 想法id
+     * @returns 返回data为空字符串代表成功
+     */
+    async unsinkThought(thought_id: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/sink`;
+        const options: any = {
+            method: 'POST',
+            json: { sink: false },
+        };
+        return await this.request<string>(url, options);
     }
 
     /**
@@ -634,6 +668,131 @@ export class MewClient extends BaseEmitter<{
     async getNodeInfo(node_id: string) {
         const url = ApiHost + `/api/v1/nodes/${node_id}`;
         return await this.request<Node>(url, null, AuthMode.Free);
+    }
+
+    /**
+     * 修改据点信息
+     * 
+     * **🛡管理员**
+     * @category 据点
+     * @param node_id 据点id （数字或英文id，非MewCode）
+     * @param info 据点信息
+     */
+    async modifyNodeInfo(node_id: string, info: OutgoingNode) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}`;
+        const options: any = {
+            method: 'PATCH',
+            json: info,
+        };
+        return await this.request<Node>(url, options);
+    }
+
+    /**
+     * 获取据点成员列表
+     * @category 据点
+     * @param node_id 据点id
+     * @param after 下一页指针，对应结果中的`next_cursor`字段
+     * @param before 上一页指针，对应结果中的`prev_cursor`字段
+     * @param userWithRelationShip 为true时，填充User对象中的关系字段，例如`following`是否关注与`followed_by`是否关注了我
+     * @param type 传入'restricted'获取受限成员
+     * @param limit 数量
+     */
+    async getNodeMembers(node_id: string, after?: string, before?: string, userWithRelationship = false, type?: string, limit = 50) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/members?limit=${limit}`;
+        const options: any = {
+            method: 'GET',
+            searchParams: {
+                limit,
+                after,
+                before,
+                userWithRelationship,
+                type
+            }
+        };
+        return await this.request<Members>(url, options);
+    }
+
+    /**
+     * 获取据点单个成员
+     * @category 据点
+     * @param node_id 据点id
+     * @param user_id 用户id
+     */
+    async getNodeMember(node_id: string, user_id: string) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        return await this.request<Member>(url, { method: 'GET'});
+    }
+
+    /**
+     * 修改据点成员权限，例如参与讨论、发表想法、发表评论
+     * 
+     * ```javascript
+     * 
+     * ```
+     * 
+     * **🛡管理员**
+     * @category 据点
+     * @param node_id 据点id
+     * @param user_id 用户id
+     * @param permissions_deny 禁用的权限Flag 使用位运算组合
+     */
+    async modifyNodeMemberPermission(node_id: string, user_id: string, permissions_deny: number) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        const options: any = {
+            method: 'PATCH',
+            json: {
+                permissions_deny
+            }
+        };
+        return await this.request<Member>(url, options);
+    }
+
+    /**
+     * 将成员移出据点
+     * 
+     * **🛡管理员**
+     * @param node_id 据点id
+     * @param user_id 用户id
+     * @returns 返回data为空字符串代表成功
+     */
+    async deleteNodeMember(node_id: string, user_id: string) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        return await this.request<string>(url, { method: 'DELETE' });
+    }
+
+    async getNodeBans(node_id: string, after?: string, before?: string, limit = 50) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/bans`;
+        const options: any = {
+            method: 'GET',
+            searchParams: {
+                limit,
+                after,
+                before,
+            }
+        };
+        return await this.request<Members>(url, options);
+    }
+
+    /**
+     * 
+     * @param node_id 
+     * @param user_id 
+     * @returns 返回data为空字符串代表成功
+     */
+    async banNodeMember(node_id: string, user_id: string) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
+        return await this.request<string>(url, { method: 'PUT' });
+    }
+
+    /**
+     * 
+     * @param node_id 
+     * @param user_id 
+     * @returns 返回data为空字符串代表成功
+     */
+    async unbanNodeMember(node_id: string, user_id: string) {
+        const url = ApiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
+        return await this.request<string>(url, { method: 'DELETE' });
     }
 
     /**

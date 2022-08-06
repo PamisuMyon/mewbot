@@ -112,3 +112,78 @@ interface Icon {
     color: string;
     customize: boolean;
 }
+
+export interface Members {
+    entries: Member[];
+    objects: CommonObjects;
+    next_cursor?: string;
+    prev_cursor?: string;
+}
+
+export interface Member {
+    roles: string[];
+    is_super_moderator: boolean;
+    is_moderator: boolean;
+    is_verified: boolean;
+    last_active_time?: string;
+    node_push_mode: string;
+    custom_push_setting: any;
+    nick: any;
+    permissions_allow: number;
+    permissions_deny: number;
+    joined_at: string;
+    updated_at: string;
+    pinned_at: string;
+    node_id: string;
+    user_id: string;
+    objects?: CommonObjects;
+}
+
+/**
+ * 发给服务端的据点信息结构
+ */
+export interface OutgoingNode {
+    /**
+     * 据点名称
+     */
+    name?: string;
+    /**
+     * 据点描述
+     */
+    description?: string;
+    /**
+     * 标签
+     */
+    tags?: string[];
+    /**
+     * 外观
+     */
+    appearance?: {
+        /**
+         * 头像
+         */
+        icon?: string;
+        /**
+         * 背景
+         */
+        banner?: string;
+    };
+}
+
+/**
+ * 权限Flag
+ */
+export enum PermissionFlag {
+    /**
+     * 参与讨论
+     */
+    Talk = 1 << 4,
+    /**
+     * 发表想法
+     */
+    Thought = 1 << 5,
+    /**
+     * 发表评论
+     */
+    Comment = 1 << 6,
+}

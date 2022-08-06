@@ -1,8 +1,9 @@
 // 消息相关
 
 import { CommonObjects } from "./common.js";
+import { Member } from "./node.js";
 import { Embed } from "./thought.js";
-import { Member, User } from "./user.js";
+import { User } from "./user.js";
 
 
 // #region From server
@@ -139,7 +140,8 @@ export interface MessageCreateData {
     /**
      * 想法id
      */
-    thought: string;      
+    thought?: string;   
+    thread?: any;
     attachments?: any[];
     embeds?: Embed[];
     mentions?: string[];
@@ -149,8 +151,12 @@ export interface MessageCreateData {
     parent?: any;
     nonce?: string;
     profile_card?: any;
-    created_at: string,
-    edited_at?: string,
+    created_at: string;
+    edited_at?: string;
+    triggered_thought?: any;
+    first_be_replied?: any;
+    reply_to_message_id?: string;
+    root_message_id?: string;
     objects: CommonObjects;
     // ---经过处理后添加的额外字段---
     /**
@@ -241,6 +247,9 @@ export interface NodeMemberAddData {
 
 // #region To server
 
+/**
+ * 发给服务端的消息结构
+ */
 export interface OutgoingMessage {
     /**
      * nonce，使用发送消息相关接口时，将自动填充

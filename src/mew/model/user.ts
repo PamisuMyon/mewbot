@@ -28,20 +28,3 @@ export interface User {
     objects: CommonObjects;
 }
 
-export interface Member {
-    roles: string[];
-    is_super_moderator: boolean;
-    is_moderator: boolean;
-    is_verified: boolean;
-    last_active_time?: string;
-    node_push_mode: string;
-    custom_push_setting: any;
-    nick: any;
-    permissions_allow: number;
-    permissions_deny: number;
-    joined_at: string;
-    updated_at: string;
-    pinned_at: string;
-    node_id: string;
-    user_id: string;
-}

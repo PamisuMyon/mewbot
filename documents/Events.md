@@ -9,7 +9,9 @@ WebSocket连接开启。
 WebSocket连接关闭。
 
 ## `dispatch`: [`Dispatch`](./api/interfaces/Dispatch.md)
-总分发事件，MewClient内部会对该事件分类后再分发，通常情况下，您应监听以下再分发的子事件，无需监听总分发事件。
+总分发事件，MewClient内部会对该事件分类后再分发，通常情况下，您应监听以下再分发的子事件，无需监听总分发事件。如果没有您需要的子事件，则监听此总分发事件，并将数据作为any类型处理。
+
+完整的事件列表请参考[yige233/bettermew/mew.frame.js](https://github.com/yige233/bettermew/blob/main/mew.frame.js)
 
 ## `user_typing`: [`UserTypingData`](./api/interfaces/UserTypingData.md)
 用户正在输入。

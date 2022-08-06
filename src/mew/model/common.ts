@@ -1,6 +1,7 @@
 import { Media } from "./message.js";
+import { Member } from "./node.js";
 import { Thought } from "./thought.js";
-import { Member, User } from "./user.js";
+import { User } from "./user.js";
 
 /**
  * 通用的API返回数据类型，用来统一服务端返回值

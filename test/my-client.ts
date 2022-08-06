@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { logger, LogLevel, MewClient } from "../src/index.js";
 
-logger.logLevel = LogLevel.Error;
+logger.logLevel = LogLevel.Debug;
 const accountPath = './test/account.json';
 const client = new MewClient();
 

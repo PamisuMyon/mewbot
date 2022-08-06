@@ -1,6 +1,6 @@
 {
   "name": "mewbot",
-  "version": "1.0.0",
+  "version": "1.0.1-beta1",
   "description": "A library for building bots on Mew",
   "keywords": [
     "Mew",
@@ -10,6 +10,10 @@
   ],
   "author": "Pamisu",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PamisuMyon/mewbot.git"
+  },
   "main": "dist/index.js",
   "files": [
     "dist"
