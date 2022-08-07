@@ -1,6 +1,6 @@
 import got from "got";
 import { logger, LogLevel } from "../commons/logger.js";
-import { ApiHost, getHeaders } from "./constants.js";
+import { ApiHost, getHeaders, Constants } from "./constants.js";
 import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
@@ -234,12 +234,37 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 发送文本消息
+     * 
      * @category 消息
      * @param topic_id 话题/节点id
-     * @param content 文本内容
+     * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会返回`ValidationError`
      */
     async sendTextMessage(topic_id: string, content: string) {
         return await this.sendMessage(topic_id, { content });
+    }
+
+    /**
+     * 发送超长文本消息
+     * 
+     * @category 消息
+     * @param topic_id 话题/节点id
+     * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会分割为多条发送，暂不支持完美分割emoji
+     */
+    async sendTextMessageSafely(topic_id: string, content: string) {
+        const results = new Array<Result<Message>>();
+        if (content.length > Constants.MaxMessageContentLength) {
+            let arr = Array.from(content);
+            while (arr.length != 0) {
+                const parts = arr.slice(0, Constants.MaxMessageContentLength);
+                results.push(await this.sendMessage(topic_id, { content: parts.join('') }));
+                arr = arr.slice(Constants.MaxMessageContentLength, arr.length);
+                if (arr.length != 0)
+                    await Util.sleep(200);
+            }
+        } else {
+            results.push(await this.sendMessage(topic_id, { content }));
+        }
+        return results;
     }
 
     /**

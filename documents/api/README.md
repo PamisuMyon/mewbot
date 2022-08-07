@@ -23,6 +23,7 @@ mewbot
 - [logger](README.md#logger)
 - [ApiHost](README.md#apihost)
 - [WsHost](README.md#wshost)
+- [Constants](README.md#constants)
 
 ### Functions
 
@@ -88,6 +89,18 @@ ___
 ### WsHost
 
 • `Const` **WsHost**: ``"wss://gateway.mew.fun/socket.io/?EIO=4&transport=websocket"``
+
+___
+
+### Constants
+
+• `Const` **Constants**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `MaxMessageContentLength` | `number` |
 
 ## Functions
 

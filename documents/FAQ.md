@@ -72,13 +72,14 @@ logger.logLevel = LogLevel.Verbose;
 ## 有现成的bot可以用吗
 
 请查看示例仓库[mewbot-demo](https://github.com/PamisuMyon/mewbot-demo)，包含一个完整的示例bot实现，配置部署后即可使用，也可以在其基础上扩展。现有功能：
-- 掷骰子
-- 来点猫猫
-- 来点狗狗
-- 查询各类信息
+- 🎲掷骰子
+- 🐱来点猫猫
+- 🐶来点狗狗
+- 🔍查询各类信息
+- 💪给猫猫加油
 
 ## 没有我要用的Mew API怎么办
 
 目前没有做到百分百覆盖Mew的API，如果没有您需要的API，请提Issue或到[不是机器人](https://mew.fun/n/not_a_robot)据点中反馈。
 
-您也可以手动抓取到API格式后，使用封装好的[MewClient.request](documents/api/classes/MewClient.md#request)发起请求，该方法会帮您处理好Mew API的授权、请求头、请求格式、响应格式等等。
+您也可以手动抓取到API格式后，使用封装好的[MewClient.request](documents/api/classes/MewClient.md#request)发起请求，该方法会帮您处理好Mew API的授权、请求头、请求格式、响应格式等等。参考示例：[给猫猫加油](https://github.com/PamisuMyon/mewbot-demo/blob/main/src/bot/repliers/kudos-replier.ts)

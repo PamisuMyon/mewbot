@@ -1,7 +1,7 @@
 import assert from "assert";
 import { Util } from "../src/commons/utils.js";
 import { Stamps } from "../src/index.js";
-import { Sleeper, topics } from "./commons.js";
+import { LoremIpsum, Sleeper, topics } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
 const topicId = topics["🍄"];
@@ -14,6 +14,16 @@ describe('Send message💬', function () {
             const result = await client?.sendTextMessage(topicId, '🍄');
             if (result?.data) {
                 assert.notEqual(result.data.id, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+        
+        it.skip('should send a looong text message💬💬💬', async function () {
+            const client = await getMewClient();
+            const result = await client?.sendTextMessageSafely(topicId, LoremIpsum);
+            if (result && result.length > 0) {
+                assert.notEqual(result[result.length-1].data?.id, undefined);
             } else {
                 assert.fail();
             }

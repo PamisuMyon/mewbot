@@ -30,6 +30,7 @@
 - [login](MewClient.md#login)
 - [sendMessage](MewClient.md#sendmessage)
 - [sendTextMessage](MewClient.md#sendtextmessage)
+- [sendTextMessageSafely](MewClient.md#sendtextmessagesafely)
 - [sendStampMessage](MewClient.md#sendstampmessage)
 - [sendThoughtMessage](MewClient.md#sendthoughtmessage)
 - [sendImageMessage](MewClient.md#sendimagemessage)
@@ -210,11 +211,30 @@ ___
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `topic_id` | `string` | 话题/节点id |
-| `content` | `string` | 文本内容 |
+| `content` | `string` | 文本内容，长度超过服务器允许的最大值（2000）时，将会返回`ValidationError` |
 
 #### Returns
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
+
+___
+
+### sendTextMessageSafely
+
+▸ **sendTextMessageSafely**(`topic_id`, `content`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>[]\>
+
+发送超长文本消息
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `topic_id` | `string` | 话题/节点id |
+| `content` | `string` | 文本内容，长度超过服务器允许的最大值（2000）时，将会分割为多条发送，暂不支持完美分割emoji |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>[]\>
 
 ___
 

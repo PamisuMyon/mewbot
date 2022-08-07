@@ -29,3 +29,7 @@ export function getWsHeaders(): Record<string, any> {
         // 'Sec-WebSocket-Extensions': 'permessage-deflate; client_max_window_bits',
     };
 }
+
+export const Constants = {
+    MaxMessageContentLength: 2000,
+};
