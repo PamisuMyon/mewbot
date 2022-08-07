@@ -36,7 +36,7 @@ WebSocket连接关闭。
 ## `thought_engagement`: [`Engagement`](./api/interfaces/Engagement.md)
 想法发生变化（情绪增加/减少、评论增加/删除)。
 
-## `comment_create`: [`Thought`](./api/interfaces/Comment.md)
+## `comment_create`: [`Comment`](./api/interfaces/Comment.md)
 新评论。
 
 ## `comment_engagement`: [`Engagement`](./api/interfaces/Engagement.md)

@@ -1,6 +1,16 @@
 [mewbot](../README.md) / MewClient
 
 # Class: MewClient
+- [授权](MewClient.md#授权)
+- [连接](MewClient.md#连接)
+- [消息](MewClient.md#消息)
+- [想法](MewClient.md#想法)
+- [媒体](MewClient.md#媒体)
+- [据点](MewClient.md#据点)
+- [用户](MewClient.md#用户)
+- [通用](MewClient.md#通用)
+
+*带有 **🛡管理员** 标记的API需要管理权限。
 
 ## Hierarchy
 

@@ -171,7 +171,7 @@ ___
 
 ### sendTextMessageSafely
 
-▸ **sendTextMessageSafely**(`topic_id`, `content`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>[]\>
+▸ **sendTextMessageSafely**(`topic_id`, `content`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Message`](./api/interfaces/Message.md)\>[]\>
 
 发送超长文本消息
 
@@ -184,7 +184,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>[]\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Message`](./api/interfaces/Message.md)\>[]\>
 
 ___
 
@@ -527,7 +527,7 @@ ___
 
 ### sinkThought
 
-▸ **sinkThought**(`thought_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+▸ **sinkThought**(`thought_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 下沉想法
 
@@ -541,7 +541,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 返回data为空字符串代表成功
 
@@ -549,7 +549,7 @@ ___
 
 ### unsinkThought
 
-▸ **unsinkThought**(`thought_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+▸ **unsinkThought**(`thought_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 取消下沉想法
 
@@ -563,7 +563,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 返回data为空字符串代表成功
 
@@ -789,7 +789,7 @@ ___
 
 ### modifyNodeInfo
 
-▸ **modifyNodeInfo**(`node_id`, `info`): `Promise`<[`Result`](../interfaces/Result.md)<[`Node`](../interfaces/Node.md)\>\>
+▸ **modifyNodeInfo**(`node_id`, `info`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Node`](./api/interfaces/Node.md)\>\>
 
 修改据点信息
 
@@ -800,17 +800,17 @@ ___
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `node_id` | `string` | 据点id （数字或英文id，非MewCode） |
-| `info` | [`OutgoingNode`](../interfaces/OutgoingNode.md) | 据点信息 |
+| `info` | [`OutgoingNode`](./api/interfaces/OutgoingNode.md) | 据点信息 |
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Node`](../interfaces/Node.md)\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Node`](./api/interfaces/Node.md)\>\>
 
 ___
 
 ### getNodeMembers
 
-▸ **getNodeMembers**(`node_id`, `after?`, `before?`, `userWithRelationship?`, `type?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+▸ **getNodeMembers**(`node_id`, `after?`, `before?`, `userWithRelationship?`, `type?`, `limit?`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Members`](./api/interfaces/Members.md)\>\>
 
 获取据点成员列表
 
@@ -827,13 +827,13 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Members`](./api/interfaces/Members.md)\>\>
 
 ___
 
 ### getNodeMember
 
-▸ **getNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+▸ **getNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Member`](./api/interfaces/Member.md)\>\>
 
 获取据点单个成员
 
@@ -846,13 +846,13 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Member`](./api/interfaces/Member.md)\>\>
 
 ___
 
 ### modifyNodeMemberPermission
 
-▸ **modifyNodeMemberPermission**(`node_id`, `user_id`, `permissions_deny`): `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+▸ **modifyNodeMemberPermission**(`node_id`, `user_id`, `permissions_deny`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Member`](./api/interfaces/Member.md)\>\>
 
 修改据点成员权限，例如参与讨论、发表想法、发表评论
 
@@ -869,17 +869,17 @@ const hasSpeak = (p & PermissionFlag.Speak) != 0;
 | :------ | :------ | :------ |
 | `node_id` | `string` | 据点id |
 | `user_id` | `string` | 用户id |
-| `permissions_deny` | `number` | 禁用的权限Flag 使用位运算组合 参照[PermissionFlag](../enums/PermissionFlag.md), 传入0解除所有限制 |
+| `permissions_deny` | `number` | 禁用的权限Flag 使用位运算组合 参照[PermissionFlag](./api/enums/PermissionFlag.md), 传入0解除所有限制 |
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Member`](./api/interfaces/Member.md)\>\>
 
 ___
 
 ### deleteNodeMember
 
-▸ **deleteNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+▸ **deleteNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 将成员移出据点
 
@@ -894,7 +894,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 返回data为空字符串代表成功
 
@@ -902,7 +902,7 @@ ___
 
 ### getNodeBans
 
-▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](./api/interfaces/Result.md)<[`Members`](./api/interfaces/Members.md)\>\>
 
 获取据点黑名单
 
@@ -919,13 +919,13 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<[`Members`](./api/interfaces/Members.md)\>\>
 
 ___
 
 ### banNodeMember
 
-▸ **banNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+▸ **banNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 将成员加入据点黑名单
 
@@ -940,7 +940,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 返回data为空字符串代表成功
 
@@ -948,7 +948,7 @@ ___
 
 ### unbanNodeMember
 
-▸ **unbanNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+▸ **unbanNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 将成员移出据点黑名单
 
@@ -963,7 +963,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+`Promise`<[`Result`](./api/interfaces/Result.md)<`string`\>\>
 
 返回data为空字符串代表成功
 

@@ -8,6 +8,8 @@ mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更�
 - 🔌bot所需的HTTP API，覆盖范围包括据点、话题/节点、想法、评论、消息、情绪、媒体等等，未来会继续补充
 - 📜API文档
 
+[🔗示例bot🤖](https://github.com/PamisuMyon/mewbot-demo)
+
 ## 快速上手
 
 ### 安装
