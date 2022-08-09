@@ -13,17 +13,20 @@
 - [post\_media](Thought.md#post_media)
 - [post\_embeds](Thought.md#post_embeds)
 - [last\_reply](Thought.md#last_reply)
-- [topic\_id](Thought.md#topic_id)
 - [node\_id](Thought.md#node_id)
+- [topic\_id](Thought.md#topic_id)
 - [author\_id](Thought.md#author_id)
 - [status](Thought.md#status)
 - [post\_content](Thought.md#post_content)
 - [post\_cover](Thought.md#post_cover)
 - [quoted\_thought\_id](Thought.md#quoted_thought_id)
+- [nonce](Thought.md#nonce)
+- [thought\_type](Thought.md#thought_type)
+- [thought\_root\_id](Thought.md#thought_root_id)
 - [created\_at](Thought.md#created_at)
 - [edited\_at](Thought.md#edited_at)
 - [sunk\_by](Thought.md#sunk_by)
-- [sunl\_at](Thought.md#sunl_at)
+- [sunk\_at](Thought.md#sunk_at)
 - [id](Thought.md#id)
 - [preview](Thought.md#preview)
 - [like\_count](Thought.md#like_count)
@@ -33,6 +36,7 @@
 - [liked](Thought.md#liked)
 - [bookmarked](Thought.md#bookmarked)
 - [reply\_messages](Thought.md#reply_messages)
+- [reply\_message\_count](Thought.md#reply_message_count)
 - [objects](Thought.md#objects)
 
 ## Properties
@@ -79,15 +83,15 @@ ___
 
 ___
 
-### topic\_id
-
-• **topic\_id**: `string`
-
-___
-
 ### node\_id
 
 • **node\_id**: `string`
+
+___
+
+### topic\_id
+
+• **topic\_id**: `string`
 
 ___
 
@@ -121,6 +125,24 @@ ___
 
 ___
 
+### nonce
+
+• **nonce**: `string`
+
+___
+
+### thought\_type
+
+• **thought\_type**: `string`
+
+___
+
+### thought\_root\_id
+
+• `Optional` **thought\_root\_id**: `string`
+
+___
+
 ### created\_at
 
 • **created\_at**: `string`
@@ -139,9 +161,9 @@ ___
 
 ___
 
-### sunl\_at
+### sunk\_at
 
-• `Optional` **sunl\_at**: `string`
+• `Optional` **sunk\_at**: `string`
 
 ___
 
@@ -196,6 +218,12 @@ ___
 ### reply\_messages
 
 • **reply\_messages**: `any`[]
+
+___
+
+### reply\_message\_count
+
+• **reply\_message\_count**: `number`
 
 ___
 

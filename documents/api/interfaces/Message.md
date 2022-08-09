@@ -34,7 +34,8 @@
 - [root\_message\_id](Message.md#root_message_id)
 - [reactions](Message.md#reactions)
 - [objects](Message.md#objects)
-- [\_user](Message.md#_user)
+- [\_author](Message.md#_author)
+- [\_otherUsers](Message.md#_otherusers)
 - [\_media](Message.md#_media)
 - [\_isDirect](Message.md#_isdirect)
 
@@ -192,17 +193,23 @@ ___
 
 • `Optional` **reply\_to\_message\_id**: `string`
 
+回复消息id
+
 ___
 
 ### root\_message\_id
 
 • `Optional` **root\_message\_id**: `string`
 
+衍生话题根消息id
+
 ___
 
 ### reactions
 
 • `Optional` **reactions**: `any`[]
+
+情绪
 
 ___
 
@@ -212,11 +219,19 @@ ___
 
 ___
 
-### \_user
+### \_author
 
-• **\_user**: [`User`](User.md)
+• **\_author**: [`User`](User.md)
 
-额外添加字段：用户信息
+额外添加字段：作者的用户信息，来源于`objects`字段，与`author_id`用户一致
+
+___
+
+### \_otherUsers
+
+• **\_otherUsers**: [`User`](User.md)[]
+
+额外添加字段：其他相关联的用户信息，来源于`objects`字段，不含作者
 
 ___
 
@@ -224,7 +239,7 @@ ___
 
 • **\_media**: [`Media`](Media.md)[]
 
-额外添加字段：消息正文中包含的媒体信息
+额外添加字段：消息正文中包含的媒体信息，来源于`objects`字段
 
 ___
 
@@ -232,4 +247,4 @@ ___
 
 • **\_isDirect**: `boolean`
 
-额外添加字段：是否为私聊消息
+额外添加字段：是否为私聊消息，通过`node_id`是否为空判断

@@ -58,21 +58,34 @@ export interface Message {
     edited_at?: string;
     triggered_thought?: any;
     first_be_replied?: any;
+    /**
+     * 回复消息id
+     */
     reply_to_message_id?: string;
+    /**
+     * 衍生话题根消息id
+     */
     root_message_id?: string;
+    /**
+     * 情绪
+     */
     reactions?: any[];
     objects: CommonObjects;
     // ---经过处理后添加的额外字段---
     /**
-     * 额外添加字段：用户信息
+     * 额外添加字段：作者的用户信息，来源于`objects`字段，与`author_id`用户一致
      */
-    _user: User;
+    _author: User;
     /**
-     * 额外添加字段：消息正文中包含的媒体信息
+     * 额外添加字段：其他相关联的用户信息，来源于`objects`字段，不含作者
+     */
+    _otherUsers: User[];
+    /**
+     * 额外添加字段：消息正文中包含的媒体信息，来源于`objects`字段
      */
     _media: Media[];
     /**
-     * 额外添加字段：是否为私聊消息
+     * 额外添加字段：是否为私聊消息，通过`node_id`是否为空判断
      */
     _isDirect: boolean;
 }
@@ -137,6 +150,10 @@ export interface OutgoingMessage {
      * 要转发的想法id
      */
     thought?: string;
+    /**
+     * 要回复的消息id
+     */
+    replyToMessageId?: string;
 }
 
 // #endregion To server

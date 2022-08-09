@@ -14,6 +14,7 @@
 - [stamp](OutgoingMessage.md#stamp)
 - [type](OutgoingMessage.md#type)
 - [thought](OutgoingMessage.md#thought)
+- [replyToMessageId](OutgoingMessage.md#replytomessageid)
 
 ## Properties
 
@@ -62,3 +63,11 @@ ___
 • `Optional` **thought**: `string`
 
 要转发的想法id
+
+___
+
+### replyToMessageId
+
+• `Optional` **replyToMessageId**: `string`
+
+要回复的消息id

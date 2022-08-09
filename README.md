@@ -91,7 +91,7 @@ logger.logLevel = LogLevel.Verbose;
 - [更多...](./documents/FAQ.md)
 
 ## 文档
-- [MewClient](/documents/Client.md)
+- [MewClient](/documents/api/classes/MewClient.md)
 - [事件](/documents/Events.md)
 - [API Doc](/documents/api/README.md)
 
@@ -161,4 +161,3 @@ npm run doc
 
 ## TODO
 - 封装图片、长文、视频、链接类型的想法发送方法
-- 补充据点管理相关API

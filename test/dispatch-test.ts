@@ -34,7 +34,7 @@ import { getMewClient } from "./my-client.js";
     client.on('message_create', (data) => {
         if (listeningTopics.indexOf(data.topic_id) == -1) return;
 
-        let str = data._user?.name + ': ';
+        let str = data._author?.name + ': ';
         if (data.content)
             str += data.content;
         else if (data.stamp)
@@ -45,7 +45,7 @@ import { getMewClient } from "./my-client.js";
     });
 
     client.on('message_delete', (data) => {
-        let str = data._user?.name + ': ';
+        let str = data._author?.name + ': ';
         if (data.content)
             str += data.content;
         else if (data.stamp)

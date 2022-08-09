@@ -44,13 +44,20 @@ export interface UserTyping {
 }
 
 export function refine(data: Message) {
+    // 没有node_id则为私聊消息
+    data._isDirect = !data.node_id;
     if (!data.objects) return;
+    // 分离作者与其他用户
     if (data.objects.users) {
+        data._otherUsers = [];
         for (const key in data.objects.users) {
-            data._user = data.objects.users[key];
-            break;
+            if (key == data.author_id)
+                data._author = data.objects.users[data.author_id];
+            else
+                data._otherUsers.push(data.objects.users[key]);
         }
     }
+    // 获取消息相关媒体
     if (data.objects.media) {
         data._media = new Array<Media>();
         for (const key in data.objects.media) {
@@ -60,7 +67,6 @@ export function refine(data: Message) {
                 data._media.push(media);
         }
     }
-    data._isDirect = !data.node_id;     // 没有node_id则为私聊消息
 }
 
 export interface Media {

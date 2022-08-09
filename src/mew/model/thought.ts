@@ -15,17 +15,20 @@ export interface Thought {
     post_media: string[];
     post_embeds: any[];
     last_reply: string;
-    topic_id: string;
     node_id: string;
+    topic_id: string;
     author_id: string;
     status: string;
     post_content: string;
     post_cover?: string;
     quoted_thought_id?: any;
+    nonce: string;
+    thought_type: string;   // Thread
+    thought_root_id?: string;
     created_at: string;
     edited_at?: string;
     sunk_by?: string;
-    sunl_at?: string;
+    sunk_at?: string;
     id: string;
     preview?: Preview;
     like_count: number;
@@ -35,6 +38,7 @@ export interface Thought {
     liked: boolean;
     bookmarked: boolean;
     reply_messages: any[];
+    reply_message_count: number;
     objects: CommonObjects;
 }
 

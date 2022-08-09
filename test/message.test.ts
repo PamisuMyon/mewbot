@@ -5,6 +5,7 @@ import { LoremIpsum, Sleeper, topics } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
 const topicId = topics["🍄"];
+// const topicId = topics["🦴"];
 const sleeper = new Sleeper();
 
 describe('Send message💬', function () {
@@ -42,6 +43,78 @@ describe('Send message💬', function () {
                 assert.fail();
             }
         });
+    });
+});
+
+describe.skip('Reply message💬', function () {
+    describe('Text message💬', function () {
+        let replyTo: string;
+        it('should send a text message💬', async function () {
+            const client = await getMewClient();
+            const result = await client?.sendTextMessage(topicId, '🍄');
+            if (result?.data) {
+                replyTo = result.data.id;
+                assert.notEqual(result.data.id, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+        
+        it('should relply a text message💬', async function () {
+            if (!replyTo)
+                assert.fail();
+            const client = await getMewClient();
+            const result = await client?.sendTextMessageSafely(topicId, '🌰🌰🌰', replyTo);
+            if (result && result.length > 0) {
+                assert.notEqual(result[result.length-1].data?.id, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+
+        it('should reply a image message🖼💬', async function () {
+            if (!replyTo)
+                assert.fail();
+            this.timeout(0);
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const filePath = './test/images/cat.jpg';
+            const result = await client?.sendImageMessage(topicId, filePath, replyTo);
+            if (result?.data) {
+                assert.notEqual(result.data, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+
+        it('should reply a stamp message👍', async function () {
+            if (!replyTo)
+                assert.fail();
+            this.timeout(0);
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const result = await client?.sendStampMessage(topicId, '62126253897068544', replyTo);
+            if (result?.data) {
+                assert.notEqual(result.data, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+
+        it('should reply a thought message💭', async function () {
+            if (!replyTo)
+                assert.fail();
+            this.timeout(0);
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const result = await client?.sendThoughtMessage(topicId, '221302974763151360', replyTo);
+            if (result?.data) {
+                assert.notEqual(result.data, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+        
     });
 });
 

@@ -238,9 +238,10 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会返回`ValidationError`
+     * @param replyToMessageId 要回复的消息id
      */
-    async sendTextMessage(topic_id: string, content: string) {
-        return await this.sendMessage(topic_id, { content });
+    async sendTextMessage(topic_id: string, content: string, replyToMessageId?: string) {
+        return await this.sendMessage(topic_id, { content, replyToMessageId });
     }
 
     /**
@@ -249,20 +250,21 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会分割为多条发送，暂不支持完美分割emoji
+     * @param replyToMessageId 要回复的消息id
      */
-    async sendTextMessageSafely(topic_id: string, content: string) {
+    async sendTextMessageSafely(topic_id: string, content: string, replyToMessageId?: string) {
         const results = new Array<Result<Message>>();
         if (content.length > Constants.MaxMessageContentLength) {
             let arr = Array.from(content);
             while (arr.length != 0) {
                 const parts = arr.slice(0, Constants.MaxMessageContentLength);
-                results.push(await this.sendMessage(topic_id, { content: parts.join('') }));
+                results.push(await this.sendMessage(topic_id, { content: parts.join(''), replyToMessageId }));
                 arr = arr.slice(Constants.MaxMessageContentLength, arr.length);
                 if (arr.length != 0)
                     await Util.sleep(200);
             }
         } else {
-            results.push(await this.sendMessage(topic_id, { content }));
+            results.push(await this.sendMessage(topic_id, { content, replyToMessageId }));
         }
         return results;
     }
@@ -272,9 +274,10 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param stamp_id 表情id 参考{@link getStamps}
+     * @param replyToMessageId 要回复的消息id
      */
-    async sendStampMessage(topic_id: string, stamp_id: string) {
-        return await this.sendMessage(topic_id, { stamp: stamp_id });
+    async sendStampMessage(topic_id: string, stamp_id: string, replyToMessageId?: string) {
+        return await this.sendMessage(topic_id, { stamp: stamp_id, replyToMessageId });
     }
 
     /**
@@ -282,11 +285,13 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param though_id 想法id
+     * @param replyToMessageId 要回复的消息id
      */
-    async sendThoughtMessage(topic_id: string, though_id: string) {
+    async sendThoughtMessage(topic_id: string, though_id: string, replyToMessageId?: string) {
         return await this.sendMessage(topic_id, {
             type: 2,
             thought: though_id,
+            replyToMessageId,
         });
     }
 
@@ -295,12 +300,14 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      * @param topic_id 话题/节点id
      * @param filePath 文件路径
+     * @param replyToMessageId 要回复的消息id
      */
-    async sendImageMessage(topic_id: string, filePath: string) {
+    async sendImageMessage(topic_id: string, filePath: string, replyToMessageId?: string) {
         const info = await this.uploadImage(filePath);
         if (info.data) {
             return await this.sendMessage(topic_id, {
-                media: [info.data.id]
+                media: [info.data.id],
+                replyToMessageId
             });
         }
         return { error: info.error };
