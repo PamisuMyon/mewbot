@@ -211,7 +211,7 @@ ___
 
 ### sendThoughtMessage
 
-▸ **sendThoughtMessage**(`topic_id`, `though_id`, `replyToMessageId?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
+▸ **sendThoughtMessage**(`topic_id`, `thought_id`, `replyToMessageId?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
 
 发送想法消息（转发想法到节点）
 
@@ -220,7 +220,7 @@ ___
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `topic_id` | `string` | 话题/节点id |
-| `though_id` | `string` | 想法id |
+| `thought_id` | `string` | 想法id |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
 #### Returns
@@ -573,9 +573,32 @@ ___
 
 ___
 
+### moveThought
+
+▸ **moveThought**(`thought_id`, `topicId`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+移动想法
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `thought_id` | `string` | 想法id |
+| `topicId` | `string` | - |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
+
+___
+
 ### getComments
 
-▸ **getComments**(`though_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../interfaces/Comments.md)\>\>
+▸ **getComments**(`thought_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../interfaces/Comments.md)\>\>
 
 获取想法下评论
 
@@ -587,7 +610,7 @@ ___
 
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
-| `though_id` | `string` | `undefined` | 想法id |
+| `thought_id` | `string` | `undefined` | 想法id |
 | `limit` | `number` | `20` | 数量 |
 | `before?` | `string` | `undefined` | 评论id，获取该条评论之后的评论 |
 | `after?` | `string` | `undefined` | 评论id，获取该条评论之前的消评论， |
@@ -600,7 +623,7 @@ ___
 
 ### postComment
 
-▸ **postComment**(`though_id`, `content`, `imageFile?`, `parentId?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comment`](../interfaces/Comment.md)\>\>
+▸ **postComment**(`thought_id`, `content`, `imageFile?`, `parentId?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comment`](../interfaces/Comment.md)\>\>
 
 发表评论
 
@@ -608,7 +631,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `though_id` | `string` | 想法id |
+| `thought_id` | `string` | 想法id |
 | `content` | `string` | 文本内容 |
 | `imageFile?` | `string` | 图片文件 (可选) |
 | `parentId?` | `string` | 要回复的评论id (可选) |
@@ -617,7 +640,7 @@ ___
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`Comment`](../interfaces/Comment.md)\>\>
 
-▸ **postComment**(`though_id`, `comment`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comment`](../interfaces/Comment.md)\>\>
+▸ **postComment**(`thought_id`, `comment`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comment`](../interfaces/Comment.md)\>\>
 
 发表评论
 
@@ -625,7 +648,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `though_id` | `string` | 想法id |
+| `thought_id` | `string` | 想法id |
 | `comment` | [`OutgoingComment`](../interfaces/OutgoingComment.md) | 评论 |
 
 #### Returns

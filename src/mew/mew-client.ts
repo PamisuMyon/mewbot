@@ -284,13 +284,13 @@ export class MewClient extends BaseEmitter<{
      * 发送想法消息（转发想法到节点）
      * @category 消息
      * @param topic_id 话题/节点id
-     * @param though_id 想法id
+     * @param thought_id 想法id
      * @param replyToMessageId 要回复的消息id
      */
-    async sendThoughtMessage(topic_id: string, though_id: string, replyToMessageId?: string) {
+    async sendThoughtMessage(topic_id: string, thought_id: string, replyToMessageId?: string) {
         return await this.sendMessage(topic_id, {
             type: 2,
-            thought: though_id,
+            thought: thought_id,
             replyToMessageId,
         });
     }
@@ -618,19 +618,36 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 移动想法
+     * 
+     * **🛡管理员**
+     * @category 想法
+     * @param thought_id 想法id
+     * @returns 返回data为空字符串代表成功
+     */
+    async moveThought(thought_id: string, topicId: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/move`;
+        const options: any = {
+            method: 'PATCH',
+            json: { topicId },
+        };
+        return await this.request<string>(url, options);
+    }
+
+    /**
      * 获取想法下评论
      * 
      * 传递before=null, after='0' 按时间正序开始获取
      * 
      * 传递before=null, after=null 按时间倒序开始获取
      * @category 想法
-     * @param though_id 想法id
+     * @param thought_id 想法id
      * @param limit 数量
      * @param before 评论id，获取该条评论之后的评论
      * @param after 评论id，获取该条评论之前的消评论，
      */
-    async getComments(though_id: string, limit = 20, before?: string, after?: string) {
-        let url = ApiHost + `/api/v1/thoughts/${though_id}/comments?limit=${limit}`;
+    async getComments(thought_id: string, limit = 20, before?: string, after?: string) {
+        let url = ApiHost + `/api/v1/thoughts/${thought_id}/comments?limit=${limit}`;
         if (before)
             url += `&before=${before}`;
         if (after)
@@ -642,24 +659,24 @@ export class MewClient extends BaseEmitter<{
      * 发表评论
      * 
      * @category 想法
-     * @param though_id 想法id
+     * @param thought_id 想法id
      * @param content 文本内容
      * @param imageFile 图片文件 (可选)
      * @param parentId 要回复的评论id (可选)
      */
-    async postComment(though_id: string, content: string, imageFile?: string, parentId?: string): Promise<Result<Comment>>;
+    async postComment(thought_id: string, content: string, imageFile?: string, parentId?: string): Promise<Result<Comment>>;
 
     /**
      * 发表评论
      * 
      * @category 想法
-     * @param though_id 想法id 
+     * @param thought_id 想法id 
      * @param comment 评论
      */
-    async postComment(though_id: string, comment: OutgoingComment): Promise<Result<Comment>>;
+    async postComment(thought_id: string, comment: OutgoingComment): Promise<Result<Comment>>;
 
-    async postComment(though_id: string, comment: OutgoingComment | string, imageFile?: string, parentId?: string) {
-        const url = ApiHost + `/api/v1/thoughts/${though_id}/comments`;
+    async postComment(thought_id: string, comment: OutgoingComment | string, imageFile?: string, parentId?: string) {
+        const url = ApiHost + `/api/v1/thoughts/${thought_id}/comments`;
         let options: any;
         if (typeof(comment) == 'string') {
             const data: OutgoingComment = {
