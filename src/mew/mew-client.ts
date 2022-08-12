@@ -5,7 +5,7 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange, OutgoingTopic } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
@@ -901,6 +901,23 @@ export class MewClient extends BaseEmitter<{
     async getTopicInfo(topic_id: string) {
         const url = ApiHost + `/api/v1/topics/${topic_id}`;
         return await this.request<Topic>(url, null, AuthMode.Free);
+    }
+
+    /**
+     * 修改话题/节点信息
+     * 
+     * **🛡管理员**
+     * @category 据点
+     * @param topic_id 话题/节点id
+     * @param info 话题/节点信息
+     */
+    async modifyTopicInfo(topic_id: string, info: OutgoingTopic) {
+        const url = ApiHost + `/api/v1/topics/${topic_id}`;
+        const options: any = {
+            method: 'PATCH',
+            json: info,
+        };
+        return await this.request<Topic>(url, options);
     }
 
     /**

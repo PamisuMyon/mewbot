@@ -60,6 +60,7 @@ mewbot
 - [Members](interfaces/Members.md)
 - [Member](interfaces/Member.md)
 - [OutgoingNode](interfaces/OutgoingNode.md)
+- [OutgoingTopic](interfaces/OutgoingTopic.md)
 - [Thoughts](interfaces/Thoughts.md)
 - [Thought](interfaces/Thought.md)
 - [OutgoingThought](interfaces/OutgoingThought.md)

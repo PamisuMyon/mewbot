@@ -1,6 +1,6 @@
 import assert from "assert";
-import { PermissionFlag } from "../src/index.js";
-import { nodes, Sleeper } from "./commons.js";
+import { OutgoingTopic, PermissionFlag } from "../src/index.js";
+import { nodes, Sleeper, topics } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
 const sleeper = new Sleeper();
@@ -27,6 +27,29 @@ describe.skip('Node management🏘', function () {
             if (result?.data) {
                 console.dir(result);
                 assert.notEqual(result.data.entries, undefined);
+            } else {
+                assert.fail();
+            }
+        });
+    });
+
+    describe.skip('Topic🗨', function() {
+        it('should modify 🦴 info🗨', async function () {
+            await sleeper.sleep();
+            const client = await getMewClient();
+            const info: OutgoingTopic = {
+                name: '🦴',
+                icon: {
+                    name: "red-spotted-mushroom",
+                    size: "L",
+                    color: "araisyu",
+                    customize: false
+                }
+            };
+            const result = await client?.modifyTopicInfo(topics["🦴"], info);
+            if (result?.data) {
+                console.dir(result);
+                assert.ok('🦴');
             } else {
                 assert.fail();
             }

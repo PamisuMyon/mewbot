@@ -1012,6 +1012,27 @@ ___
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`Topic`](../interfaces/Topic.md)\>\>
 
+___
+
+### modifyTopicInfo
+
+▸ **modifyTopicInfo**(`topic_id`, `info`): `Promise`<[`Result`](../interfaces/Result.md)<[`Topic`](../interfaces/Topic.md)\>\>
+
+修改话题/节点信息
+
+**🛡管理员**
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `topic_id` | `string` | 话题/节点id |
+| `info` | [`OutgoingTopic`](../interfaces/OutgoingTopic.md) | 话题/节点信息 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Topic`](../interfaces/Topic.md)\>\>
+
 ## 用户
 
 ### getUserInfo

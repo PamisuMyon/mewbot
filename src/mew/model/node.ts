@@ -107,8 +107,17 @@ interface Vector3 {
 }
 
 interface Icon {
+    /**
+     * 名称
+     */
     name: string;
+    /**
+     * 大小 `S` `M` `L`
+     */
     size: string;
+    /**
+     * 颜色
+     */
     color: string;
     customize: boolean;
 }
@@ -186,4 +195,18 @@ export enum PermissionFlag {
      * 发表评论
      */
     Comment = 1 << 6,
+}
+
+/**
+ * 发给服务端的话题/节点信息结构
+ */
+export interface OutgoingTopic {
+    /**
+     * 名称
+     */
+    name: string;
+    /**
+     * 图标
+     */
+    icon?: Icon;
 }
