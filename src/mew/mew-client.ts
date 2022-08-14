@@ -5,7 +5,7 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct, ObjectEntries, OutgoingMe } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
@@ -429,7 +429,15 @@ export class MewClient extends BaseEmitter<{
             url += `&before=${before}`;
         if (after)
             url += `&after=${after}`;
-        return await this.request<TopicMessageResult>(url, null, AuthMode.Free);
+        return await this.request<ObjectEntries<Message>>(url, null, AuthMode.Free);
+    }
+
+    /**
+     * 获取所有私聊会话
+     */
+    async getDirects() {
+        const url = ApiHost + `/api/v1/users/@me/directs`;
+        return await this.request<ObjectEntries<Direct>>(url);
     }
 
     /**
@@ -769,6 +777,14 @@ export class MewClient extends BaseEmitter<{
     }
 
     /**
+     * 获取已加入及申请加入中的所有据点
+     */
+    async getMyNodes() {
+        const url = ApiHost + `/api/v1/users/@me/mynodes`;
+        return await this.request<ObjectEntries<Node>>(url);
+    }
+
+    /**
      * 获取据点信息
      * @category 据点
      * @param node_id 据点id （数字或英文id，非MewCode）
@@ -817,7 +833,7 @@ export class MewClient extends BaseEmitter<{
                 type
             }
         };
-        return await this.request<Members>(url, options);
+        return await this.request<ObjectEntries<Member>>(url, options);
     }
 
     /**
@@ -828,7 +844,7 @@ export class MewClient extends BaseEmitter<{
      */
     async getNodeMember(node_id: string, user_id: string) {
         const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
-        return await this.request<Member>(url, { method: 'GET'});
+        return await this.request<ObjectEntries<Member>>(url, { method: 'GET'});
     }
 
     /**
@@ -890,7 +906,7 @@ export class MewClient extends BaseEmitter<{
                 before,
             }
         };
-        return await this.request<Members>(url, options);
+        return await this.request<ObjectEntries<Member>>(url, options);
     }
 
     /**
@@ -965,6 +981,19 @@ export class MewClient extends BaseEmitter<{
     async getMeInfo() {
         const url = ApiHost + '/api/v1/users/@me';
         return await this.request<User>(url);
+    }
+
+    /**
+     * 修改自身信息
+     * @param me 个人资料
+     */
+    async modifyMeInfo(me: OutgoingMe) {
+        const url = ApiHost + '/api/v1/users/@me';
+        const options: any = {
+            method: 'PATCH',
+            json: me,
+        };
+        return await this.request<User>(url, options);
     }
 
     /**

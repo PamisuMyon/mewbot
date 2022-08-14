@@ -1,4 +1,4 @@
-import { CommonObjects } from "./common.js";
+import { ObjectEntries } from "./common.js";
 import { Message } from "./message.js";
 import { Member } from "./node.js";
 import { Comment, Thought } from "./thought.js";
@@ -100,8 +100,6 @@ export interface Engagement {
     type?: number;
 }
 
-export interface NodeMemberActivityChange {
-    objects: CommonObjects;
-    entries: User[];
+export type NodeMemberActivityChange = ObjectEntries<User> & {
     memeber_info: Record<string, Partial<Member>>;
 }

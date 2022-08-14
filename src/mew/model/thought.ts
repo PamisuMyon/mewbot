@@ -1,11 +1,5 @@
-import { CommonObjects, Reaction } from "./common.js";
+import { CommonObjects, ObjectEntries, Reaction } from "./common.js";
 import { Member } from "./node.js";
-
-export interface Thoughts {
-    objects: CommonObjects;
-    entries: Thought[];
-    memeber_info: Record<string, Partial<Member>>;
-}
 
 export interface Thought {
     media: any[];
@@ -47,6 +41,10 @@ interface Preview {
     title: string;
 }
 
+export type Thoughts = ObjectEntries<Thought> & {
+    memeber_info: Record<string, Partial<Member>>;
+}
+
 /**
  * 发给服务端的想法结构
  */
@@ -85,10 +83,7 @@ export interface Embed {
     id: string;
 }
 
-export interface Comments {
-    objects: CommonObjects;
-    entries: Comment[];
-}
+export type Comments = ObjectEntries<Comment>;
 
 export interface Comment {
     mentions: string[];

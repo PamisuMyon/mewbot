@@ -90,11 +90,6 @@ export interface Message {
     _isDirect: boolean;
 }
 
-export interface TopicMessageResult {
-    objects: CommonObjects;
-    entries: Message[];
-}
-
 export interface STSToken {
     current_time: number;
     expired_time: number;
@@ -122,14 +117,17 @@ export interface MediaImageInfo {
  * 私聊会话信息
  */
 export interface Direct {
-  type: string;
-  recipients: string[];
-  media: string[];
-  created_at: string;
-  updated_at?: string;
-  id: string;
-  last_messages: Message[];
-  objects: CommonObjects;
+    type: string;
+    recipients: string[];
+    media: string[];
+    created_at: string;
+    updated_at?: string;
+    id: string;
+    last_messages: Message[];
+    objects: CommonObjects;
+    unread?: false;
+    unread_count?: number;
+    acl?: string;
 }
 
 // #endregion From server

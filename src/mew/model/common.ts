@@ -1,5 +1,5 @@
 import { Media } from "./dispatch.js";
-import { Member } from "./node.js";
+import { Member, Topic } from "./node.js";
 import { Thought } from "./thought.js";
 import { User } from "./user.js";
 
@@ -17,11 +17,25 @@ export interface Result<T> {
     error?: ErrorBody,
 }
 
+/**
+ * 通用的`objects`字段类型
+ */
 export interface CommonObjects {
     media?: Record<string, Media>;
     users?: Record<string, User>;
     members?: Record<string, Member>;
     thoughts?: Record<string, Thought>;
+    topics?: Record<string, Topic>;
+}
+
+/**
+ * 通用的Entries数据类型
+ */
+export interface ObjectEntries<T> {
+    objects: CommonObjects;
+    entries: T[];
+    next_cursor?: string;
+    prev_cursor?: string;
 }
 
 export interface ErrorBody {

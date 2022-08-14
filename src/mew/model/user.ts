@@ -28,3 +28,29 @@ export interface User {
     objects?: CommonObjects;
 }
 
+/**
+ * 发往服务端的个人资料
+ */
+export interface OutgoingMe {
+    /**
+     * 背景图片
+     */
+    background?: string;
+    /**
+     * Mew ID 每年只能更改两次
+     */
+    username?: string;
+    /**
+     * 昵称
+     */
+    name?: string;
+    /**
+     * 头像
+     */
+    avatar?: string;
+    /**
+     * 描述
+     */
+    description?: string;
+    profile?: string;
+}

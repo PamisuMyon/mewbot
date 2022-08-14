@@ -1,6 +1,7 @@
 // 据点相关
 
-import { CommonObjects } from "./common.js";
+import { type } from "os";
+import { CommonObjects, ObjectEntries } from "./common.js";
 import { Message } from "./message.js";
 
 export interface Node {
@@ -120,13 +121,6 @@ interface Icon {
      */
     color: string;
     customize: boolean;
-}
-
-export interface Members {
-    entries: Member[];
-    objects: CommonObjects;
-    next_cursor?: string;
-    prev_cursor?: string;
 }
 
 export interface Member {
