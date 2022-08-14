@@ -118,6 +118,20 @@ export interface MediaImageInfo {
     id: string;
 }
 
+/**
+ * 私聊会话信息
+ */
+export interface Direct {
+  type: string;
+  recipients: string[];
+  media: string[];
+  created_at: string;
+  updated_at?: string;
+  id: string;
+  last_messages: Message[];
+  objects: CommonObjects;
+}
+
 // #endregion From server
 
 // #region To server

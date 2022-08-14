@@ -253,13 +253,13 @@ ___
 
 ▸ **getTopicMessages**(`topic_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`TopicMessageResult`](../interfaces/TopicMessageResult.md)\>\>
 
-获取某个节点的消息
+获取某个节点/私聊会话的消息
 
 #### Parameters
 
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
-| `topic_id` | `string` | `undefined` | 话题/节点id |
+| `topic_id` | `string` | `undefined` | 节点的`topic_id` 私聊会话的`id` |
 | `limit` | `number` | `50` | 数量，默认50 |
 | `before?` | `string` | `undefined` | 消息id，获取该条消息之前的消息 |
 | `after?` | `string` | `undefined` | 消息id，获取该条消息之后的消息 |
@@ -267,6 +267,44 @@ ___
 #### Returns
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`TopicMessageResult`](../interfaces/TopicMessageResult.md)\>\>
+
+___
+
+### getDirect
+
+▸ **getDirect**(`userIdOrUsername`): `Promise`<[`Result`](../interfaces/Result.md)<[`Direct`](../interfaces/Direct.md)\>\>
+
+获取/发起对某个用户的私聊
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `userIdOrUsername` | `string` | 用户id或用户Mew ID（账号） |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`Direct`](../interfaces/Direct.md)\>\>
+
+___
+
+### deleteDirect
+
+▸ **deleteDirect**(`userIdOrUsername`): `Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+移除对某个用户的私聊（消息记录不会删除）
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `userIdOrUsername` | `string` | 用户id或用户Mew ID（账号） |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<`string`\>\>
+
+返回data为空字符串代表成功
 
 ___
 
@@ -1037,7 +1075,7 @@ ___
 
 ### getUserInfo
 
-▸ **getUserInfo**(`username`): `Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
+▸ **getUserInfo**(`userIdOrUsername`): `Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
 
 获取用户信息
 
@@ -1045,7 +1083,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `username` | `string` | 用户Mew ID |
+| `userIdOrUsername` | `string` | 用户id或用户Mew ID（账号） |
 
 #### Returns
 
@@ -1082,7 +1120,7 @@ ___
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
 | `url` | `string` | `undefined` | url |
-| `options?` | `any` | `undefined` | 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) |
+| `options?` | `any` | `undefined` | 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)， 默认配置：    ```javascript  {      headers: { 'Content-Type': 'application/json' + Mew相关请求头 },      method: 'GET',      responseType: 'json',  }  ``` |
 | `authMode` | [`AuthMode`](../enums/AuthMode.md) | `AuthMode.NeedAuth` | 授权模式，参考[AuthMode](../enums/AuthMode.md) |
 
 #### Returns

@@ -184,3 +184,30 @@ describe('Get topic messages💬', function () {
         });
     });
 });
+
+describe.skip('Direct💬', function() {
+    it('should get direct conversation with nana', async function () {
+        await sleeper.sleep();
+        const client = await getMewClient();
+        const result = await client?.getDirect('nana');
+        console.dir(result);
+        if (result?.data?.id) {
+            assert.ok('ok');
+        } else {
+            assert.fail();
+        }
+    });
+    
+    it('should delete direct conversation with nana', async function () {
+        await sleeper.sleep();
+        const client = await getMewClient();
+        const result = await client?.deleteDirect('nana');
+        console.dir(result);
+        if (result && result.data == '') {
+            assert.ok('ok');
+        } else {
+            assert.fail();
+        }
+    });
+
+});

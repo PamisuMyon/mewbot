@@ -51,6 +51,7 @@ mewbot
 - [TopicMessageResult](interfaces/TopicMessageResult.md)
 - [STSToken](interfaces/STSToken.md)
 - [MediaImageInfo](interfaces/MediaImageInfo.md)
+- [Direct](interfaces/Direct.md)
 - [OutgoingMessage](interfaces/OutgoingMessage.md)
 - [Node](interfaces/Node.md)
 - [Mod](interfaces/Mod.md)

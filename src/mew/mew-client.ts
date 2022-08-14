@@ -5,7 +5,7 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange, OutgoingTopic } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, TopicMessageResult, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Members, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct } from "./model/index.js";
 
 export class MewClient extends BaseEmitter<{
     open: void;
@@ -133,7 +133,15 @@ export class MewClient extends BaseEmitter<{
      * 通用的json请求方法
      * @category 通用
      * @param url url 
-     * @param options 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     * @param options 请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)， 默认配置：
+     * 
+     * ```javascript
+     * {
+     *     headers: { 'Content-Type': 'application/json' + Mew相关请求头 },
+     *     method: 'GET',
+     *     responseType: 'json',
+     * }
+     * ```
      * @param authMode 授权模式，参考{@link AuthMode}
      * @returns 请求结果， 参考{@link Result}
      */
@@ -408,9 +416,9 @@ export class MewClient extends BaseEmitter<{
 
 
     /**
-     * 获取某个节点的消息
+     * 获取某个节点/私聊会话的消息
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 节点的`topic_id` 私聊会话的`id`
      * @param limit 数量，默认50
      * @param before 消息id，获取该条消息之前的消息
      * @param after 消息id，获取该条消息之后的消息
@@ -421,8 +429,28 @@ export class MewClient extends BaseEmitter<{
             url += `&before=${before}`;
         if (after)
             url += `&after=${after}`;
-        const result = await this.request<TopicMessageResult>(url, null, AuthMode.Free);
-        return result;
+        return await this.request<TopicMessageResult>(url, null, AuthMode.Free);
+    }
+
+    /**
+     * 获取/发起对某个用户的私聊
+     * @category 消息
+     * @param userIdOrUsername 用户id或用户Mew ID（账号）
+     */
+    async getDirect(userIdOrUsername: string) {
+        const url = ApiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
+        return await this.request<Direct>(url);
+    }
+
+    /**
+     * 移除对某个用户的私聊（消息记录不会删除）
+     * @category 消息
+     * @param userIdOrUsername 用户id或用户Mew ID（账号）
+     * @returns 返回data为空字符串代表成功
+     */
+    async deleteDirect(userIdOrUsername: string) {
+        const url = ApiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
+        return await this.request<string>(url, { method: 'DELETE' });
     }
 
     /**
@@ -923,10 +951,10 @@ export class MewClient extends BaseEmitter<{
     /**
      * 获取用户信息
      * @category 用户
-     * @param username 用户Mew ID 
+     * @param userIdOrUsername 用户id或用户Mew ID（账号） 
      */
-    async getUserInfo(username: string) {
-        const url = ApiHost + `/api/v1/users/${username}`;
+    async getUserInfo(userIdOrUsername: string) {
+        const url = ApiHost + `/api/v1/users/${userIdOrUsername}`;
         return await this.request<User>(url, null, AuthMode.NoAuth);
     }
 
