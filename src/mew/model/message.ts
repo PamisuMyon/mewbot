@@ -122,6 +122,9 @@ export interface Direct {
     media: string[];
     created_at: string;
     updated_at?: string;
+    /**
+     * 等同于话题/节点的`topic_id`，使用此id来向私聊发送消息
+     */
     id: string;
     last_messages: Message[];
     objects: CommonObjects;

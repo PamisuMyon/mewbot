@@ -26,6 +26,7 @@ export class MewClient extends BaseEmitter<{
     node_member_ban: Member,
     node_member_activity_change: NodeMemberActivityChange,
 }> {
+
     protected _ws!: WsHandler;
     protected _auth!: Auth;
     /**
@@ -44,6 +45,24 @@ export class MewClient extends BaseEmitter<{
         if (this._auth && this._auth.token)
             return true;
         return false;
+    }
+
+    protected _defaultRequestOptions: any = {
+        headers: { 'Content-Type': 'application/json' },
+        method: 'GET',
+        responseType: 'json',
+    };
+    /**
+     * 默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     */
+    get defaultRequestOptions() {
+        return this._defaultRequestOptions;
+    }
+    /**
+     * 设置默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     */
+    set defaultRequestOptions(value: any) {
+        this._defaultRequestOptions = value;
     }
 
     constructor() {
@@ -146,18 +165,13 @@ export class MewClient extends BaseEmitter<{
      * @returns 请求结果， 参考{@link Result}
      */
     async request<T>(url: string, options?: any, authMode = AuthMode.NeedAuth): Promise<Result<T>> {
-        const optDefaults = {
-            headers: { 'Content-Type': 'application/json' },
-            method: 'GET',
-            responseType: 'json',
-        };
         options = {
-            ...optDefaults,
+            ...this._defaultRequestOptions,
             ...options
         };
         options.headers = {
-            ...options.headers,
             ...getHeaders(),
+            ...options.headers,
         };
         if (authMode == AuthMode.NeedAuth) {
             if (!this.hasAuth) {
@@ -181,9 +195,10 @@ export class MewClient extends BaseEmitter<{
                 logger.dir(err.response.body, LogLevel.Error);
                 err.response.body._isError = true;
                 return { error: err.response.body };
+            } else {
+                return { error: err };
             }
         }
-        return { error: { name: 'UnknownClientError' } };
     }
 
     /**
@@ -226,7 +241,7 @@ export class MewClient extends BaseEmitter<{
     /**
      * 发送消息
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param message 消息 参考{@link OutgoingMessage}
      */
     async sendMessage(topic_id: string, message: OutgoingMessage) {
@@ -244,7 +259,7 @@ export class MewClient extends BaseEmitter<{
      * 发送文本消息
      * 
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会返回`ValidationError`
      * @param replyToMessageId 要回复的消息id
      */
@@ -256,7 +271,7 @@ export class MewClient extends BaseEmitter<{
      * 发送超长文本消息
      * 
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param content 文本内容，长度超过服务器允许的最大值（2000）时，将会分割为多条发送，暂不支持完美分割emoji
      * @param replyToMessageId 要回复的消息id
      */
@@ -280,7 +295,7 @@ export class MewClient extends BaseEmitter<{
     /**
      * 发送表情消息
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param stamp_id 表情id 参考{@link getStamps}
      * @param replyToMessageId 要回复的消息id
      */
@@ -291,7 +306,7 @@ export class MewClient extends BaseEmitter<{
     /**
      * 发送想法消息（转发想法到节点）
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param thought_id 想法id
      * @param replyToMessageId 要回复的消息id
      */
@@ -306,7 +321,7 @@ export class MewClient extends BaseEmitter<{
     /**
      * 发送图片消息
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param filePath 文件路径
      * @param replyToMessageId 要回复的消息id
      */
@@ -392,8 +407,8 @@ export class MewClient extends BaseEmitter<{
                 logger.debug('Imagex uploaded: ' + result.ImageUri);
                 return result;
             } else {
-                logger.debug('Imagex upload error result: ');
-                logger.dir(res);
+                logger.error('Imagex upload error result: ');
+                logger.dir(res, LogLevel.Error);
             }
         } catch (err) {
             logger.error('Imagex upload failed.');
@@ -466,7 +481,7 @@ export class MewClient extends BaseEmitter<{
      * 
      * 如果在节点、私聊中发送了消息，服务端会自动将该条消息之前的所有消息标记为已读，不需要手动调用本方法
      * @category 消息
-     * @param topic_id 话题/节点id
+     * @param topic_id 话题/节点id、私聊会话id
      * @param message_id 消息id
      * @returns 返回data为空字符串代表成功
      */

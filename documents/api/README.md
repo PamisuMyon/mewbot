@@ -38,6 +38,7 @@ mewbot
 - [ConnectOptions](interfaces/ConnectOptions.md)
 - [Result](interfaces/Result.md)
 - [CommonObjects](interfaces/CommonObjects.md)
+- [ObjectEntries](interfaces/ObjectEntries.md)
 - [ErrorBody](interfaces/ErrorBody.md)
 - [Stamps](interfaces/Stamps.md)
 - [Stamp](interfaces/Stamp.md)
@@ -46,9 +47,7 @@ mewbot
 - [UserTyping](interfaces/UserTyping.md)
 - [Media](interfaces/Media.md)
 - [Engagement](interfaces/Engagement.md)
-- [NodeMemberActivityChange](interfaces/NodeMemberActivityChange.md)
 - [Message](interfaces/Message.md)
-- [TopicMessageResult](interfaces/TopicMessageResult.md)
 - [STSToken](interfaces/STSToken.md)
 - [MediaImageInfo](interfaces/MediaImageInfo.md)
 - [Direct](interfaces/Direct.md)
@@ -58,21 +57,25 @@ mewbot
 - [Role](interfaces/Role.md)
 - [Joinquestion](interfaces/Joinquestion.md)
 - [Topic](interfaces/Topic.md)
-- [Members](interfaces/Members.md)
 - [Member](interfaces/Member.md)
 - [OutgoingNode](interfaces/OutgoingNode.md)
 - [OutgoingTopic](interfaces/OutgoingTopic.md)
-- [Thoughts](interfaces/Thoughts.md)
 - [Thought](interfaces/Thought.md)
 - [OutgoingThought](interfaces/OutgoingThought.md)
 - [Post](interfaces/Post.md)
 - [Content](interfaces/Content.md)
 - [Embed](interfaces/Embed.md)
-- [Comments](interfaces/Comments.md)
 - [Comment](interfaces/Comment.md)
 - [OutgoingComment](interfaces/OutgoingComment.md)
 - [Auth](interfaces/Auth.md)
 - [User](interfaces/User.md)
+- [OutgoingMe](interfaces/OutgoingMe.md)
+
+### Type Aliases
+
+- [NodeMemberActivityChange](README.md#nodememberactivitychange)
+- [Thoughts](README.md#thoughts)
+- [Comments](README.md#comments)
 
 ## Variables
 
@@ -171,3 +174,21 @@ ___
 #### Returns
 
 `void`
+
+## Type Aliases
+
+### NodeMemberActivityChange
+
+Ƭ **NodeMemberActivityChange**: [`ObjectEntries`](interfaces/ObjectEntries.md)<[`User`](interfaces/User.md)\> & { `memeber_info`: `Record`<`string`, `Partial`<[`Member`](interfaces/Member.md)\>\>  }
+
+___
+
+### Thoughts
+
+Ƭ **Thoughts**: [`ObjectEntries`](interfaces/ObjectEntries.md)<[`Thought`](interfaces/Thought.md)\> & { `memeber_info`: `Record`<`string`, `Partial`<[`Member`](interfaces/Member.md)\>\>  }
+
+___
+
+### Comments
+
+Ƭ **Comments**: [`ObjectEntries`](interfaces/ObjectEntries.md)<[`Comment`](interfaces/Comment.md)\>

@@ -16,6 +16,9 @@
 - [id](Direct.md#id)
 - [last\_messages](Direct.md#last_messages)
 - [objects](Direct.md#objects)
+- [unread](Direct.md#unread)
+- [unread\_count](Direct.md#unread_count)
+- [acl](Direct.md#acl)
 
 ## Properties
 
@@ -53,6 +56,8 @@ ___
 
 • **id**: `string`
 
+等同于话题/节点的`topic_id`，使用此id来向私聊发送消息
+
 ___
 
 ### last\_messages
@@ -64,3 +69,21 @@ ___
 ### objects
 
 • **objects**: [`CommonObjects`](CommonObjects.md)
+
+___
+
+### unread
+
+• `Optional` **unread**: ``false``
+
+___
+
+### unread\_count
+
+• `Optional` **unread\_count**: `number`
+
+___
+
+### acl
+
+• `Optional` **acl**: `string`

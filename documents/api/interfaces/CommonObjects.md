@@ -2,6 +2,8 @@
 
 # Interface: CommonObjects
 
+通用的`objects`字段类型
+
 ## Table of contents
 
 ### Properties
@@ -10,6 +12,7 @@
 - [users](CommonObjects.md#users)
 - [members](CommonObjects.md#members)
 - [thoughts](CommonObjects.md#thoughts)
+- [topics](CommonObjects.md#topics)
 
 ## Properties
 
@@ -34,3 +37,9 @@ ___
 ### thoughts
 
 • `Optional` **thoughts**: `Record`<`string`, [`Thought`](Thought.md)\>
+
+___
+
+### topics
+
+• `Optional` **topics**: `Record`<`string`, [`Topic`](Topic.md)\>

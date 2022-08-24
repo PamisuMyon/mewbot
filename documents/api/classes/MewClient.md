@@ -140,7 +140,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `message` | [`OutgoingMessage`](../interfaces/OutgoingMessage.md) | 消息 参考[OutgoingMessage](../interfaces/OutgoingMessage.md) |
 
 #### Returns
@@ -159,7 +159,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `content` | `string` | 文本内容，长度超过服务器允许的最大值（2000）时，将会返回`ValidationError` |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
@@ -179,7 +179,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `content` | `string` | 文本内容，长度超过服务器允许的最大值（2000）时，将会分割为多条发送，暂不支持完美分割emoji |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
@@ -199,7 +199,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `stamp_id` | `string` | 表情id 参考[getStamps](MewClient.md#getstamps) |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
@@ -219,7 +219,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `thought_id` | `string` | 想法id |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
@@ -239,7 +239,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `filePath` | `string` | 文件路径 |
 | `replyToMessageId?` | `string` | 要回复的消息id |
 
@@ -251,7 +251,7 @@ ___
 
 ### getTopicMessages
 
-▸ **getTopicMessages**(`topic_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`TopicMessageResult`](../interfaces/TopicMessageResult.md)\>\>
+▸ **getTopicMessages**(`topic_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Message`](../interfaces/Message.md)\>\>\>
 
 获取某个节点/私聊会话的消息
 
@@ -266,7 +266,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`TopicMessageResult`](../interfaces/TopicMessageResult.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Message`](../interfaces/Message.md)\>\>\>
 
 ___
 
@@ -320,7 +320,7 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `topic_id` | `string` | 话题/节点id |
+| `topic_id` | `string` | 话题/节点id、私聊会话id |
 | `message_id` | `string` | 消息id |
 
 #### Returns
@@ -393,7 +393,7 @@ ___
 
 ### getNodeThoutghts
 
-▸ **getNodeThoutghts**(`node_id`, `limit?`, `sort?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../interfaces/Thoughts.md)\>\>
+▸ **getNodeThoutghts**(`node_id`, `limit?`, `sort?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../README.md#thoughts)\>\>
 
 获取据点下所有话题的想法
 
@@ -407,13 +407,13 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../interfaces/Thoughts.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../README.md#thoughts)\>\>
 
 ___
 
 ### getTopicThoughts
 
-▸ **getTopicThoughts**(`topic_id`, `limit?`, `sort?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../interfaces/Thoughts.md)\>\>
+▸ **getTopicThoughts**(`topic_id`, `limit?`, `sort?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../README.md#thoughts)\>\>
 
 获取指定话题下的想法
 
@@ -427,7 +427,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../interfaces/Thoughts.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`Thoughts`](../README.md#thoughts)\>\>
 
 ___
 
@@ -636,7 +636,7 @@ ___
 
 ### getComments
 
-▸ **getComments**(`thought_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../interfaces/Comments.md)\>\>
+▸ **getComments**(`thought_id`, `limit?`, `before?`, `after?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../README.md#comments)\>\>
 
 获取想法下评论
 
@@ -655,7 +655,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../interfaces/Comments.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`Comments`](../README.md#comments)\>\>
 
 ___
 
@@ -875,7 +875,7 @@ ___
 
 ### getNodeMembers
 
-▸ **getNodeMembers**(`node_id`, `after?`, `before?`, `userWithRelationship?`, `type?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+▸ **getNodeMembers**(`node_id`, `after?`, `before?`, `userWithRelationship?`, `type?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 获取据点成员列表
 
@@ -892,13 +892,13 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 ___
 
 ### getNodeMember
 
-▸ **getNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+▸ **getNodeMember**(`node_id`, `user_id`): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 获取据点单个成员
 
@@ -911,7 +911,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Member`](../interfaces/Member.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 ___
 
@@ -967,7 +967,7 @@ ___
 
 ### getNodeBans
 
-▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+▸ **getNodeBans**(`node_id`, `after?`, `before?`, `limit?`): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 获取据点黑名单
 
@@ -984,7 +984,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Result`](../interfaces/Result.md)<[`Members`](../interfaces/Members.md)\>\>
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Member`](../interfaces/Member.md)\>\>\>
 
 ___
 

@@ -23,6 +23,6 @@ ___
 
 ### data
 
-• **data**: [`Message`](Message.md) \| [`Member`](Member.md) \| [`Thought`](Thought.md) \| [`Comment`](Comment.md) \| [`UserTyping`](UserTyping.md) \| [`Engagement`](Engagement.md) \| [`NodeMemberActivityChange`](NodeMemberActivityChange.md)
+• **data**: [`Message`](Message.md) \| [`Member`](Member.md) \| [`Thought`](Thought.md) \| [`Comment`](Comment.md) \| [`UserTyping`](UserTyping.md) \| [`Engagement`](Engagement.md) \| [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)
 
 数据

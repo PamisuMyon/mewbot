@@ -23,13 +23,31 @@ export enum ConnectStatus {
     None, Connecting, Connected
 }
 
+/**
+ * MewClient连接选项
+ */
 export interface ConnectOptions {
+    /**
+     * 订阅据点id集合
+     */
     subcriptionNodes: string[];
+    /**
+     * WebSocket握手超时
+     */
     handshakeTimeout: number;
+    /**
+     * 心跳检测间隔，超过此间隔为检测到心跳，则自动重连
+     */
     heartbeatCheckTimeout: number;
+    /**
+     * 重连前的延时
+     */
     reconnectTimeout: number;
 }
 
+/**
+ * 初始化MewClient连接选项（内部自动调用）
+ */
 export function initConnectOptions(options?: Partial<ConnectOptions>) : ConnectOptions {
     const defaults = {
         subcriptionNodes: [],
@@ -42,4 +60,3 @@ export function initConnectOptions(options?: Partial<ConnectOptions>) : ConnectO
         ...options,
     };
 }
-

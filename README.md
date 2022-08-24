@@ -2,13 +2,24 @@
 [![](https://img.shields.io/badge/dynamic/json?color=%234279ea&label=Mew%20Online%20🤖&prefix=%E6%88%90%E5%91%98%20&query=%24.member_count&url=https%3A%2F%2Fapi.mew.fun%2Fapi%2Fv1%2Fnodes%2Fnot_a_robot&labelColor=30549f)](https://mew.fun/n/not_a_robot)
 [![](https://img.shields.io/npm/v/mewbot.svg?maxAge=3600)](https://www.npmjs.com/package/mewbot)
 
-mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更轻松地与Mew的API交互，搭建自己的bot。特点：
+mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更轻松地与Mew的API交互，搭建自己的bot。包含客户端实现**MewClient**与bot业务框架实现**MewBot**。
+
+**MewClient**是Mew的客户端实现，特点：
 
 - 💬简单易用的且稳定的消息监听（WebSocket API封装、消息解析、事件分发、断线重连）
-- 🔌bot所需的HTTP API，覆盖范围包括据点、话题/节点、想法、评论、消息、情绪、媒体等等，未来会继续补充
+- 🔌bot所需的HTTP API，覆盖范围包括据点、话题/节点、想法、评论、消息、情绪、媒体等等
 - 📜API文档
 
-[🔗示例bot🤖](https://github.com/PamisuMyon/mewbot-demo)
+**MewBot**(WIP)实现了基础bot业务，特点：
+
+- 🏠灵活的部署配置，功能可单独拆分至具体话题/节点，并在不同的话题/节点可以有不同的表现
+- 💡支持多种响应模式，@bot模式、回复模式、指令模式及混搭
+- 🔗异步消息处理与易扩展的回复链
+- 🧊防刷屏与指令冷却机制
+
+您可以根据需求，选用MewClient来轻松快速地实现与Mew的交互、在此基础上开发您的bot框架；或选用MewBot来省去繁杂的基础业务实现工作，直接构建一个具有丰富功能的bot。
+
+[🔗示例bot | nana bot(WIP) | MewBot(WIP)](https://github.com/PamisuMyon/mewbot-demo)
 
 ## 快速上手
 
@@ -43,7 +54,7 @@ npm i mewbot
 }
 ```
 
-### 使用
+### 使用MewClient
 
 **[getting-started.js](https://github.com/PamisuMyon/mewbot-demo/blob/main/src/starter/-2-getting-started.js)**
 
@@ -81,7 +92,13 @@ logger.logLevel = LogLevel.Verbose;
 
 `message_create`事件在收到新消息时触发，可使用多个`client.on`来监听不同类型的事件，[所有事件类型](/documents/Events.md)。
 
+关于授权Token、据点ID、话题/节点ID的获取请参照[常见问题](#常见问题)
+
 部署在其他据点时，请确保您是目标据点的管理员，或已取得目标据点管理员的同意。
+
+### 使用MewBot
+
+WIP，将在稳定后迁移到本仓库，在这之前您可以通过克隆代码来使用：[mewbot-demo](https://github.com/PamisuMyon/mewbot-demo)
 
 ## 常见问题
 - [如何取得授权Token](./documents/FAQ.md#如何授权)
@@ -142,7 +159,7 @@ npm run test-dispatch
 
 如果新增事件，需要修改如下文件：
 
-- [message.ts](src/mew/model/message.ts)：事件中的数据类型
+- [dispatch.ts](src/mew/model/dispatch.ts)：事件中的数据类型
 - [mew-client.ts](src/mew/mew-client.ts)：在类头部补充相关的事件定义，在`onDispatch`中补充对事件的分发。
 
 
@@ -160,4 +177,5 @@ npm run doc
 其他文档需要手动更新。
 
 ## TODO
+- 完善MewBot
 - 封装图片、长文、视频、链接类型的想法发送方法
