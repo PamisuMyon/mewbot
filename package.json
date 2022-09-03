@@ -1,6 +1,6 @@
 {
   "name": "mewbot",
-  "version": "1.0.3",
+  "version": "1.0.4-beta3",
   "description": "A library for building bots on Mew",
   "keywords": [
     "Mew",
