@@ -125,6 +125,8 @@ class TomatoReplier extends Replier {
     }
 }
 ```
+bot收到一条消息后，将依次调用所有回复器的`test`方法，根据挑选函数选取最合适的回复器，执行其`reply`方法，默认的挑选函数[Replier.pick01](/documents/api/classes/Replier.md#pick01)优先选择置信度为`1`的回复器。
+
 4. 初始化选项
 ```typescript
 const options: InitOptions = {
@@ -146,6 +148,10 @@ bot.launch();
 完整代码：[using-mew-bot.ts](https://github.com/PamisuMyon/mewbot-demo/blob/main/src/starter/-4-using-mew-bot.ts)
 
 更多示例请参考：[示例bot](https://github.com/PamisuMyon/mewbot-demo) | [nana](https://github.com/PamisuMyon/nanabot)
+
+MewBot启动流程、消息处理逻辑、存储：[MewBot](/documents/api/classes/MewBot.md)
+
+回复器：[Replier](documents\api\classes\Replier.md)、[MatryoshkaReplier](D:\Projects\CodeProjects\mewbot\documents\api\classes\MatryoshkaReplier.md)
 
 ## 常见问题
 - [如何取得授权Token](./documents/FAQ.md#如何授权)
