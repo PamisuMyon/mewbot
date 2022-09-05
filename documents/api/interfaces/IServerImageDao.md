@@ -2,6 +2,8 @@
 
 # Interface: IServerImageDao
 
+服务端图片信息存储接口
+
 ## Table of contents
 
 ### Methods

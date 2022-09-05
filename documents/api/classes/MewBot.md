@@ -2,7 +2,32 @@
 
 # Class: MewBot
 
-MewBot
+## 启动流程
+
+- 初始化存储，参照 [init](../interfaces/IBotStorage.md#init)，默认不做任何操作
+- 使用存储中读取到的授权信息进行授权
+- 获取bot自身信息
+- 从存储中读取bot配置，初始化回复器、屏蔽列表、防御机制等
+- 连接到WebSocket服务，开启消息处理
+
+## 消息处理
+
+- 收到消息时，将其存入消息队列
+- 从消息队列中取出消息，进行处理 [processMessages](MewBot.md#processmessages)
+- 判断消息是否触发bot
+- 挑选最合适的回复器，参照：[ReplierPickFunction](../README.md#replierpickfunction)、[pick01](Replier.md#pick01)、[test](Replier.md#test)  
+- 执行回复器的[reply](Replier.md#reply)方法
+- 回复器的reply方法中，调用 [reply](../interfaces/IBot.md#reply)、[replyText](../interfaces/IBot.md#replytext)、[replyImage](../interfaces/IBot.md#replyimage)、[replyStamp](../interfaces/IBot.md#replystamp)、[replyThought](../interfaces/IBot.md#replythought) 等方法进行回复
+
+## 存储
+[storage](MewBot.md#storage)用于处理bot所需的存储业务，参照[IBotStorage](../interfaces/IBotStorage.md)，默认的实现为[FileStorage](FileStorage.md)，你可以通过[InitOptions](../interfaces/InitOptions.md)来指定自己的存储实现。
+
+默认使用文件形式实现，如果重写，需要处理的数据：
+- 账号授权信息的获取
+- bot配置的获取与刷新
+- 屏蔽列表的获取与更新
+
+MongoDB重写示例：[MongoStorage](https://github.com/PamisuMyon/nanabot/blob/main/src/storage.ts)
 
 ## Implements
 
@@ -65,6 +90,8 @@ ___
 ### \_storage
 
 • `Protected` **\_storage**: [`IBotStorage`](../interfaces/IBotStorage.md)
+
+存储
 
 ___
 
@@ -370,7 +397,7 @@ ___
 
 ▸ **reply**(`to`, `message`, `messageReplyMode?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
 
-回复
+回复，所有replyXXX方法将会处理回复模式、添加@对方 等等
 
 #### Parameters
 
@@ -401,7 +428,7 @@ ___
 | Name | Type | Default value | Description |
 | :------ | :------ | :------ | :------ |
 | `to` | [`Message`](../interfaces/Message.md) | `undefined` | 待回复消息 |
-| `content` | `string` | `undefined` | 文本 |
+| `content` | `string` | `undefined` | - |
 | `messageReplyMode?` | [`MesageReplyMode`](../enums/MesageReplyMode.md) | `undefined` | 回复模式，默认使用配置值 |
 | `addReplyTitle` | `boolean` | `true` | 是否加上@对方 |
 
@@ -491,14 +518,16 @@ ___
 
 ▸ **replyImageWithCache**(`to`, `imageFile`, `dao`, `messageReplyMode?`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
 
+回复图片，利用以存储的服务端图片信息，可在发送已发过的图片时，直接使用服务端图片ID，而无需重复上传图片
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `to` | [`Message`](../interfaces/Message.md) |
-| `imageFile` | `string` |
-| `dao` | [`IServerImageDao`](../interfaces/IServerImageDao.md) |
-| `messageReplyMode?` | [`MesageReplyMode`](../enums/MesageReplyMode.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `to` | [`Message`](../interfaces/Message.md) | 待回复消息 |
+| `imageFile` | `string` | 图片文件路径 |
+| `dao` | [`IServerImageDao`](../interfaces/IServerImageDao.md) | 服务端图片信息存储实现，没有默认实现，请按自己的口味实现一个。MongoDB示例：[server-image.ts](https://github.com/PamisuMyon/nanabot/blob/main/src/models/server-image.ts) |
+| `messageReplyMode?` | [`MesageReplyMode`](../enums/MesageReplyMode.md) |  |
 
 #### Returns
 
@@ -514,13 +543,15 @@ ___
 
 ▸ **sendImageWithCache**(`topic_id`, `imageFile`, `dao`): `Promise`<[`Result`](../interfaces/Result.md)<[`Message`](../interfaces/Message.md)\>\>
 
+上面那个方法的直接发送版，无需指定回复哪条消息
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `topic_id` | `string` |
-| `imageFile` | `string` |
-| `dao` | [`IServerImageDao`](../interfaces/IServerImageDao.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `topic_id` | `string` | 话题/节点ID，私聊ID |
+| `imageFile` | `string` | 图片文件路径 |
+| `dao` | [`IServerImageDao`](../interfaces/IServerImageDao.md) | 服务端图片信息存储实现 |
 
 #### Returns
 
@@ -534,7 +565,7 @@ ___
 
 ### handleImageWithCache
 
-▸ **handleImageWithCache**(`imageFile`, `dao`): `Promise`<[`Result`](../interfaces/Result.md)<[`MediaImageInfo`](../interfaces/MediaImageInfo.md)\>\>
+▸ `Protected` **handleImageWithCache**(`imageFile`, `dao`): `Promise`<[`Result`](../interfaces/Result.md)<[`MediaImageInfo`](../interfaces/MediaImageInfo.md)\>\>
 
 #### Parameters
 

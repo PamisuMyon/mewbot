@@ -5,8 +5,21 @@ import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct, ObjectEntries, OutgoingMe } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct, ObjectEntries, OutgoingMe, refineMessage } from "./model/index.js";
 
+/**
+ * - [授权](MewClient.md#授权)
+ * - [连接](MewClient.md#连接)
+ * - [消息](MewClient.md#消息)
+ * - [想法](MewClient.md#想法)
+ * - [媒体](MewClient.md#媒体)
+ * - [据点](MewClient.md#据点)
+ * - [用户](MewClient.md#用户)
+ * - [通用](MewClient.md#通用)
+ * 
+ * 带有 **🛡管理员** 标记的API需要管理权限。
+ * 
+ */
 export class MewClient extends BaseEmitter<{
     open: void;
     close: void;
@@ -54,12 +67,14 @@ export class MewClient extends BaseEmitter<{
     };
     /**
      * 默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     * @category 通用
      */
     get defaultRequestOptions() {
         return this._defaultRequestOptions;
     }
     /**
      * 设置默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+     * @category 通用
      */
     set defaultRequestOptions(value: any) {
         this._defaultRequestOptions = value;
@@ -252,6 +267,8 @@ export class MewClient extends BaseEmitter<{
             json: message,
         };
         const result = await this.request<Message>(url, options);
+        if (result.data)
+            refineMessage(result.data);
         return result;
     }
 
@@ -449,6 +466,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 获取所有私聊会话
+     * @category 消息
      */
     async getDirects() {
         const url = ApiHost + `/api/v1/users/@me/directs`;
@@ -793,6 +811,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 获取已加入及申请加入中的所有据点
+     * @category 用户
      */
     async getMyNodes() {
         const url = ApiHost + `/api/v1/users/@me/mynodes`;
@@ -1000,6 +1019,7 @@ export class MewClient extends BaseEmitter<{
 
     /**
      * 修改自身信息
+     * @category 用户
      * @param me 个人资料
      */
     async modifyMeInfo(me: OutgoingMe) {

@@ -36,7 +36,7 @@ export interface IBot {
     refresh(): Promise<void>;
 
     /**
-     * 回复
+     * 回复，所有replyXXX方法将会处理回复模式、添加@对方 等等
      * @param to 待回复消息
      * @param message 消息
      * @param messageReplyMode 回复模式，默认使用配置值
@@ -76,8 +76,21 @@ export interface IBot {
      */
     replyImage(to: Message, imageFile: string, messageReplyMode?: MesageReplyMode): Promise<Result<Message>>;
 
+    /**
+     * 回复图片，利用以存储的服务端图片信息，可在发送已发过的图片时，直接使用服务端图片ID，而无需重复上传图片
+     * @param to 待回复消息
+     * @param imageFile 图片文件路径
+     * @param dao 服务端图片信息存储实现，没有默认实现，请按自己的口味实现一个。MongoDB示例：[server-image.ts](https://github.com/PamisuMyon/nanabot/blob/main/src/models/server-image.ts)
+     * @param messageReplyMode 
+     */
     replyImageWithCache(to: Message, imageFile: string, dao: IServerImageDao, messageReplyMode?: MesageReplyMode): Promise<Result<Message>>
 
+    /**
+     * 上面那个方法的直接发送版，无需指定回复哪条消息
+     * @param topic_id 话题/节点ID，私聊ID
+     * @param imageFile 图片文件路径
+     * @param dao 服务端图片信息存储实现
+     */
     sendImageWithCache(topic_id: string, imageFile: string, dao: IServerImageDao): Promise<Result<Message>>
     
 }
@@ -102,11 +115,23 @@ export interface InitOptions {
     replierPickFunction?: ReplierPickFunction;
 }
 
+/**
+ * 服务端图片信息，利用此信息可在下一次发送同一张图片时，直接使用服务端图片ID，而无需重复上传图片
+ */
 export interface ServerImageInfo {
+    /**
+     * 文件名
+     */
     fileName: string;
+    /**
+     * 服务端图片信息
+     */
     info: MediaImageInfo;
 }
 
+/**
+ * 服务端图片信息存储接口
+ */
 export interface IServerImageDao {
 
     findByFileName(fileName: string): Promise<ServerImageInfo | null>

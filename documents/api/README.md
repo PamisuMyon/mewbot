@@ -108,6 +108,7 @@ mewbot
 - [getWsHeaders](README.md#getwsheaders)
 - [initConnectOptions](README.md#initconnectoptions)
 - [refine](README.md#refine)
+- [refineMessage](README.md#refinemessage)
 
 ## Variables
 
@@ -123,11 +124,19 @@ ___
 
 • `Const` **NoConfidence**: [`TestInfo`](interfaces/TestInfo.md)
 
+```js
+{ confidence: 0 }
+```
+
 ___
 
 ### HalfConfidence
 
 • `Const` **HalfConfidence**: [`TestInfo`](interfaces/TestInfo.md)
+
+```js
+{ confidence: .5 }
+```
 
 ___
 
@@ -135,17 +144,29 @@ ___
 
 • `Const` **FullConfidence**: [`TestInfo`](interfaces/TestInfo.md)
 
+```js
+{ confidence: 1 }
+```
+
 ___
 
 ### Replied
 
 • `Const` **Replied**: [`ReplyResult`](interfaces/ReplyResult.md)
 
+```js
+{ success: true }
+```
+
 ___
 
 ### ReplyFailed
 
 • `Const` **ReplyFailed**: [`ReplyResult`](interfaces/ReplyResult.md)
+
+```js
+{ success: false }
+```
 
 ___
 
@@ -279,11 +300,36 @@ ___
 
 ▸ **refine**(`data`): `void`
 
+提取并赋值额外字段
+
+**`Deprecated`**
+
+即将删除，请使用[refineMessage](README.md#refinemessage)代替
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `data` | [`Message`](interfaces/Message.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `data` | [`Message`](interfaces/Message.md) | 消息 |
+
+#### Returns
+
+`void`
+
+___
+
+### refineMessage
+
+▸ **refineMessage**(`data`): `void`
+
+提取并赋值额外字段
+大部分情况下无需手动调用此方法
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `data` | [`Message`](interfaces/Message.md) | 消息 |
 
 #### Returns
 

@@ -25,8 +25,23 @@ export interface TestInfo {
     options?: TestParams;
 }
 
+/**
+ * ```js
+ * { confidence: 0 }
+ * ```
+ */
 export const NoConfidence: TestInfo = { confidence: 0 };
+/**
+ * ```js
+ * { confidence: .5 }
+ * ```
+ */
 export const HalfConfidence: TestInfo = { confidence: .5 };
+/**
+ * ```js
+ * { confidence: 1 }
+ * ```
+ */
 export const FullConfidence: TestInfo = { confidence: 1 };
 
 /**
@@ -46,14 +61,30 @@ export interface ReplyResult {
     }
 }
 
+/**
+ * ```js
+ * { success: true }
+ * ```
+ */
 export const Replied: ReplyResult = { success: true };
+/**
+ * ```js
+ * { success: false }
+ * ```
+ */
 export const ReplyFailed: ReplyResult = { success: false };
 
 /**
  * 测试参数
  */
 export interface TestParams {
+    /**
+     * 是否为单纯的指令模式：指令模式开启，且其他触发方式未触发
+     */
     isCommandMode: boolean;
+    /**
+     * 是否为回复我的消息
+     */
     isReplyMe: boolean;
 }
 
@@ -67,13 +98,32 @@ export type ReplierPickFunction = (repliers: Replier[], msg: Message, params: Te
  */
 export abstract class Replier {
 
+    /**
+     * 类型
+     */
     abstract type: string;
+    /**
+     * 指令冷却检测
+     */
     protected _spams: { [topicId: string]: Spam } = {};
+    /**
+     * 回复器在私聊中总是可用，默认为`true`，即{@link checkAvailable}方法在私聊中将总是返回`true`
+     */
+    protected _directAlwaysAvailable = true;
 
+    /**
+     * 回复器测试，此方法中对消息进行预处理，返回相应的置信度与预处理数据，参照{@link TestInfo}
+     * 
+     * bot收到一条消息后，将依次调用回复器的`test`方法，根据挑选函数选取最合适的回复器，执行其`reply`方法。
+     * 
+     * 默认的挑选函数{@link Replier.pick01}优先选择置信度为`1`的回复器。
+     * @param msg 消息
+     * @param options 测试参数
+     */
     abstract test(msg: Message, options: TestParams): Promise<TestInfo>;
 
     /**
-     * 回复消息
+     * 回复消息，此方法中对消息进行回复。当回复器通过测试被选中时，此方法将被调用。
      * @param bot bot 
      * @param msg 待回复的消息
      */
@@ -119,12 +169,13 @@ export abstract class Replier {
     }
 
     /**
-     * 判断回复器在话题（节点）中是否可用
+     * 判断回复器在话题（节点）中是否可用，不可用时，默认回复不可用提示
      * @param bot bot
      * @param msg 待回复消息
-     * @param shouldReply 不可用时，是否直接回复功能不可用提示
+     * @param shouldReply 不可用时，是否直接回复功能不可用提示，默认为`true`
      */
     protected async checkAvailable(bot: IBot, msg: Message, shouldReply = true): Promise<boolean> {
+        if (msg._isDirect && this._directAlwaysAvailable) return true;
         const conf = this.getConfig(bot, msg.topic_id);
         if (!conf) {
             if (shouldReply) {
@@ -231,6 +282,9 @@ export abstract class Replier {
 
 }
 
+/**
+ * 套娃回复器测试结果
+ */
 export interface MatryoshkaTestInfo extends TestInfo {
     /**
      * 当前回复器在所属回复器集合中的下标，由外部设置
@@ -245,8 +299,17 @@ export abstract class MatryoshkaReplier extends Replier {
     
     abstract override type: string;
 
+    /**
+     * 子回复器集合
+     */
     protected _children!: Array<Replier>;
+    /**
+     * 回复器挑选函数
+     */
     protected _pickFunc = Replier.pick;
+    /**
+     * {@link test}方法中，保持被选中的子回复器的测试置信度，默认为`false`，将使用`1`覆盖
+     */
     protected _keepChildConfidence = false;
 
     override async init(bot: IBot): Promise<void> {
@@ -308,7 +371,11 @@ export abstract class MatryoshkaReplier extends Replier {
         return result;
     }
 
-    getCooldownHint(remainTime?: number) {
+    /**
+     * 获取冷却提示文本
+     * @param remainTime 剩余时间
+     */
+    protected getCooldownHint(remainTime?: number) {
         if (remainTime) {
             return `指令冷却中，请${Util.getTimeCounterText(remainTime)}后再试`;
         } else {

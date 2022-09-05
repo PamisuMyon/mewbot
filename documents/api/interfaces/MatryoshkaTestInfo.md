@@ -2,7 +2,7 @@
 
 # Interface: MatryoshkaTestInfo
 
-回复器测试结果
+套娃回复器测试结果
 
 ## Hierarchy
 

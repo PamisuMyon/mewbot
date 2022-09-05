@@ -43,7 +43,21 @@ export interface UserTyping {
     member: Member;       // 用户在据点中的成员信息
 }
 
+/**
+ * 提取并赋值额外字段
+ * @deprecated 即将删除，请使用{@link refineMessage}代替
+ * @param data 消息
+ */
 export function refine(data: Message) {
+    return refineMessage(data);
+}
+
+/**
+ * 提取并赋值额外字段
+ * 大部分情况下无需手动调用此方法
+ * @param data 消息
+ */
+export function refineMessage(data: Message) {
     // 没有node_id则为私聊消息
     data._isDirect = !data.node_id;
     if (!data.objects) return;

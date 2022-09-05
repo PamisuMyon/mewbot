@@ -3,7 +3,7 @@ import { logger, LogLevel } from "../commons/logger.js";
 import { WsHost, getWsHeaders } from "./constants.js";
 import unescape from "../commons/unescape.js";
 import { BaseEmitter } from "../commons/base-emitter.js";
-import { Auth, ConnectOptions, ConnectStatus, Dispatch, DispatchEvent, initConnectOptions, Message, refine } from './model/index.js';
+import { Auth, ConnectOptions, ConnectStatus, Dispatch, DispatchEvent, initConnectOptions, Message, refineMessage } from './model/index.js';
 
 export class WsHandler extends BaseEmitter<{
     open: void,
@@ -207,7 +207,7 @@ export class WsHandler extends BaseEmitter<{
         if (!raw.data)
             return;
         if (raw.event == DispatchEvent.MessageCreate) {
-            refine(raw.data as Message);
+            refineMessage(raw.data as Message);
         }
     }
     

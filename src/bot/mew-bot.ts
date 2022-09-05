@@ -13,7 +13,32 @@ import { Message, OutgoingMessage, MediaImageInfo } from "../mew/model/message.j
 import { User } from "../mew/model/user.js";
 
 /**
- * MewBot
+ * ## 启动流程
+ * 
+ * - 初始化存储，参照 {@link IBotStorage.init}，默认不做任何操作
+ * - 使用存储中读取到的授权信息进行授权
+ * - 获取bot自身信息
+ * - 从存储中读取bot配置，初始化回复器、屏蔽列表、防御机制等
+ * - 连接到WebSocket服务，开启消息处理
+ * 
+ * ## 消息处理
+ * 
+ * - 收到消息时，将其存入消息队列
+ * - 从消息队列中取出消息，进行处理 {@link processMessages}
+ * - 判断消息是否触发bot
+ * - 挑选最合适的回复器，参照：{@link ReplierPickFunction}、{@link Replier.pick01}、{@link Replier.test}  
+ * - 执行回复器的{@link Replier.reply}方法
+ * - 回复器的reply方法中，调用 {@link IBot.reply}、{@link IBot.replyText}、{@link IBot.replyImage}、{@link IBot.replyStamp}、{@link IBot.replyThought} 等方法进行回复
+ * 
+ * ## 存储
+ * [storage](MewBot.md#storage)用于处理bot所需的存储业务，参照{@link IBotStorage}，默认的实现为{@link FileStorage}，你可以通过{@link InitOptions}来指定自己的存储实现。
+ * 
+ * 默认使用文件形式实现，如果重写，需要处理的数据：
+ * - 账号授权信息的获取
+ * - bot配置的获取与刷新
+ * - 屏蔽列表的获取与更新
+ * 
+ * MongoDB重写示例：[MongoStorage](https://github.com/PamisuMyon/nanabot/blob/main/src/storage.ts)
  */
 export class MewBot implements IBot {
 
@@ -22,6 +47,9 @@ export class MewBot implements IBot {
      * MewClient
      */
     get client(): MewClient { return this._client; }
+    /**
+     * 存储
+     */
     protected _storage!: IBotStorage;
     /**
      * 存储
@@ -332,11 +360,24 @@ export class MewBot implements IBot {
         return;
     }
 
+    /**
+     * 回复，所有replyXXX方法将会处理回复模式、添加@对方 等等
+     * @param to 待回复消息
+     * @param message 消息
+     * @param messageReplyMode 回复模式，默认使用配置值
+     */
     async reply(to: Message, message: OutgoingMessage, messageReplyMode?: MesageReplyMode) {
         message.replyToMessageId = this.getReplyMessageId(to, messageReplyMode);
         return await this._client.sendMessage(to.topic_id, message);
     }
 
+    /**
+     * 回复文本
+     * @param to 待回复消息
+     * @param reply 文本
+     * @param messageReplyMode 回复模式，默认使用配置值
+     * @param addReplyTitle 是否加上@对方
+     */
     async replyText(to: Message, content: string, messageReplyMode?: MesageReplyMode, addReplyTitle = true) {
         const replyToMessageId = this.getReplyMessageId(to, messageReplyMode);
         // 只要使用了回复功能，就无需加上@对方
@@ -349,24 +390,49 @@ export class MewBot implements IBot {
         }
     }
 
+    /**
+     * 回复表情
+     * @param to 待回复消息
+     * @param stampId 表情
+     * @param messageReplyMode 回复模式，默认使用配置值
+     */
     async replyStamp(to: Message, stampId: string, messageReplyMode?: MesageReplyMode) {
         logger.debug(`To: ${to.content}  Reply Stamp: ${stampId}`);
         const replyToMessageId = this.getReplyMessageId(to, messageReplyMode);
         return await this._client.sendStampMessage(to.topic_id, stampId, replyToMessageId);
     }
 
+    /**
+     * 转发想法
+     * @param to 待回复消息
+     * @param thoughtId 想法
+     * @param messageReplyMode 回复模式，默认使用配置值
+     */
     async replyThought(to: Message, thoughtId: string, messageReplyMode?: MesageReplyMode) {
         logger.debug(`To: ${to.content}  Reply Thought: ${thoughtId}`);
         const replyToMessageId = this.getReplyMessageId(to, messageReplyMode);
         return await this._client.sendThoughtMessage(to.topic_id, thoughtId, replyToMessageId);
     }
 
+    /**
+     * 回复图片
+     * @param to 待回复消息
+     * @param imageFile 图片文件路径
+     * @param messageReplyMode 回复模式，默认使用配置值
+     */
     async replyImage(to: Message, imageFile: string, messageReplyMode?: MesageReplyMode) {
         logger.debug(`To: ${to.content}  Reply Image: ${imageFile}`);
         const replyToMessageId = this.getReplyMessageId(to, messageReplyMode);
         return await this._client.sendImageMessage(to.topic_id, imageFile, replyToMessageId);
     }
 
+    /**
+     * 回复图片，利用以存储的服务端图片信息，可在发送已发过的图片时，直接使用服务端图片ID，而无需重复上传图片
+     * @param to 待回复消息
+     * @param imageFile 图片文件路径
+     * @param dao 服务端图片信息存储实现，没有默认实现，请按自己的口味实现一个。MongoDB示例：[server-image.ts](https://github.com/PamisuMyon/nanabot/blob/main/src/models/server-image.ts)
+     * @param messageReplyMode 
+     */
     async replyImageWithCache(to: Message, imageFile: string, dao: IServerImageDao, messageReplyMode?: MesageReplyMode) {
         logger.debug(`To: ${to.content}  Reply Image With Cache: ${imageFile}`);
         const result = await this.handleImageWithCache(imageFile, dao);
@@ -377,6 +443,12 @@ export class MewBot implements IBot {
         }
     }
 
+    /**
+     * 上面那个方法的直接发送版，无需指定回复哪条消息
+     * @param topic_id 话题/节点ID，私聊ID
+     * @param imageFile 图片文件路径
+     * @param dao 服务端图片信息存储实现
+     */
     async sendImageWithCache(topic_id: string, imageFile: string, dao: IServerImageDao) {
         logger.debug(`To: ${topic_id}  Send Image With Cache: ${imageFile}`);
         const result = await this.handleImageWithCache(imageFile, dao);
@@ -387,7 +459,7 @@ export class MewBot implements IBot {
         }
     }
 
-    async handleImageWithCache(imageFile: string, dao: IServerImageDao): Promise<Result<MediaImageInfo>> {
+    protected async handleImageWithCache(imageFile: string, dao: IServerImageDao): Promise<Result<MediaImageInfo>> {
         const serverImage = await dao.findByFileName(imageFile);
         let info;
         if (serverImage && serverImage.info) {

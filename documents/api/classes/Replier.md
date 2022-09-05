@@ -33,6 +33,7 @@
 
 - [type](Replier.md#type)
 - [\_spams](Replier.md#_spams)
+- [\_directAlwaysAvailable](Replier.md#_directalwaysavailable)
 
 ## Methods
 
@@ -100,12 +101,18 @@ ___
 
 ▸ `Abstract` **test**(`msg`, `options`): `Promise`<[`TestInfo`](../interfaces/TestInfo.md)\>
 
+回复器测试，此方法中对消息进行预处理，返回相应的置信度与预处理数据，参照[TestInfo](../interfaces/TestInfo.md)
+
+bot收到一条消息后，将依次调用回复器的`test`方法，根据挑选函数选取最合适的回复器，执行其`reply`方法。
+
+默认的挑选函数[pick01](Replier.md#pick01)优先选择置信度为`1`的回复器。
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `msg` | [`Message`](../interfaces/Message.md) |
-| `options` | [`TestParams`](../interfaces/TestParams.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `msg` | [`Message`](../interfaces/Message.md) | 消息 |
+| `options` | [`TestParams`](../interfaces/TestParams.md) | 测试参数 |
 
 #### Returns
 
@@ -117,7 +124,7 @@ ___
 
 ▸ `Abstract` **reply**(`bot`, `msg`, `test`): `Promise`<[`ReplyResult`](../interfaces/ReplyResult.md)\>
 
-回复消息
+回复消息，此方法中对消息进行回复。当回复器通过测试被选中时，此方法将被调用。
 
 #### Parameters
 
@@ -174,7 +181,7 @@ ___
 
 ▸ `Protected` **checkAvailable**(`bot`, `msg`, `shouldReply?`): `Promise`<`boolean`\>
 
-判断回复器在话题（节点）中是否可用
+判断回复器在话题（节点）中是否可用，不可用时，默认回复不可用提示
 
 #### Parameters
 
@@ -182,7 +189,7 @@ ___
 | :------ | :------ | :------ | :------ |
 | `bot` | [`IBot`](../interfaces/IBot.md) | `undefined` | bot |
 | `msg` | [`Message`](../interfaces/Message.md) | `undefined` | 待回复消息 |
-| `shouldReply` | `boolean` | `true` | 不可用时，是否直接回复功能不可用提示 |
+| `shouldReply` | `boolean` | `true` | 不可用时，是否直接回复功能不可用提示，默认为`true` |
 
 #### Returns
 
@@ -238,12 +245,24 @@ ___
 
 • `Abstract` **type**: `string`
 
+类型
+
 ___
 
 ### \_spams
 
 • `Protected` **\_spams**: `Object` = `{}`
 
+指令冷却检测
+
 #### Index signature
 
 ▪ [topicId: `string`]: [`Spam`](Spam.md)
+
+___
+
+### \_directAlwaysAvailable
+
+• `Protected` **\_directAlwaysAvailable**: `boolean` = `true`
+
+回复器在私聊中总是可用，默认为`true`，即[checkAvailable](Replier.md#checkavailable)方法在私聊中将总是返回`true`

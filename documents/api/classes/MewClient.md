@@ -1,6 +1,7 @@
 [mewbot](../README.md) / MewClient
 
 # Class: MewClient
+
 - [授权](MewClient.md#授权)
 - [连接](MewClient.md#连接)
 - [消息](MewClient.md#消息)
@@ -10,7 +11,96 @@
 - [用户](MewClient.md#用户)
 - [通用](MewClient.md#通用)
 
-*带有 **🛡管理员** 标记的API需要管理权限。
+带有 **🛡管理员** 标记的API需要管理权限。
+
+## Hierarchy
+
+- `BaseEmitter`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }\>
+
+  ↳ **`MewClient`**
+
+## Table of contents
+
+### Properties
+
+- [\_emitter](MewClient.md#_emitter)
+- [\_ws](MewClient.md#_ws)
+- [\_auth](MewClient.md#_auth)
+- [\_defaultRequestOptions](MewClient.md#_defaultrequestoptions)
+
+### Methods
+
+- [on](MewClient.md#on)
+- [off](MewClient.md#off)
+- [emit](MewClient.md#emit)
+- [initWs](MewClient.md#initws)
+- [onDispatch](MewClient.md#ondispatch)
+- [connect](MewClient.md#connect)
+- [close](MewClient.md#close)
+- [request](MewClient.md#request)
+- [setToken](MewClient.md#settoken)
+- [login](MewClient.md#login)
+- [sendMessage](MewClient.md#sendmessage)
+- [sendTextMessage](MewClient.md#sendtextmessage)
+- [sendTextMessageSafely](MewClient.md#sendtextmessagesafely)
+- [sendStampMessage](MewClient.md#sendstampmessage)
+- [sendThoughtMessage](MewClient.md#sendthoughtmessage)
+- [sendImageMessage](MewClient.md#sendimagemessage)
+- [uploadImage](MewClient.md#uploadimage)
+- [stsToken](MewClient.md#ststoken)
+- [imagexUpload](MewClient.md#imagexupload)
+- [getImageInfo](MewClient.md#getimageinfo)
+- [getTopicMessages](MewClient.md#gettopicmessages)
+- [getDirects](MewClient.md#getdirects)
+- [getDirect](MewClient.md#getdirect)
+- [deleteDirect](MewClient.md#deletedirect)
+- [readMessage](MewClient.md#readmessage)
+- [deleteMessage](MewClient.md#deletemessage)
+- [addMessageReaction](MewClient.md#addmessagereaction)
+- [deleteMessageReaction](MewClient.md#deletemessagereaction)
+- [getNodeThoutghts](MewClient.md#getnodethoutghts)
+- [getTopicThoughts](MewClient.md#gettopicthoughts)
+- [getThought](MewClient.md#getthought)
+- [postThought](MewClient.md#postthought)
+- [postSimpleThought](MewClient.md#postsimplethought)
+- [deleteThought](MewClient.md#deletethought)
+- [embeds](MewClient.md#embeds)
+- [addThoughtReaction](MewClient.md#addthoughtreaction)
+- [deleteThoughtReaction](MewClient.md#deletethoughtreaction)
+- [sinkThought](MewClient.md#sinkthought)
+- [unsinkThought](MewClient.md#unsinkthought)
+- [moveThought](MewClient.md#movethought)
+- [getComments](MewClient.md#getcomments)
+- [postComment](MewClient.md#postcomment)
+- [deleteComment](MewClient.md#deletecomment)
+- [addCommentReaction](MewClient.md#addcommentreaction)
+- [deleteCommentReaction](MewClient.md#deletecommentreaction)
+- [getMyNodes](MewClient.md#getmynodes)
+- [getNodeInfo](MewClient.md#getnodeinfo)
+- [modifyNodeInfo](MewClient.md#modifynodeinfo)
+- [getNodeMembers](MewClient.md#getnodemembers)
+- [getNodeMember](MewClient.md#getnodemember)
+- [modifyNodeMemberPermission](MewClient.md#modifynodememberpermission)
+- [deleteNodeMember](MewClient.md#deletenodemember)
+- [getNodeBans](MewClient.md#getnodebans)
+- [banNodeMember](MewClient.md#bannodemember)
+- [unbanNodeMember](MewClient.md#unbannodemember)
+- [getTopicInfo](MewClient.md#gettopicinfo)
+- [modifyTopicInfo](MewClient.md#modifytopicinfo)
+- [getUserInfo](MewClient.md#getuserinfo)
+- [getMeInfo](MewClient.md#getmeinfo)
+- [modifyMeInfo](MewClient.md#modifymeinfo)
+- [getStamps](MewClient.md#getstamps)
+
+### Accessors
+
+- [auth](MewClient.md#auth)
+- [hasAuth](MewClient.md#hasauth)
+- [defaultRequestOptions](MewClient.md#defaultrequestoptions)
+
+### Constructors
+
+- [constructor](MewClient.md#constructor)
 
 ## 授权
 
@@ -108,25 +198,6 @@ ___
 #### Returns
 
 `void`
-
-
-### on
-
-▸ **on**<`K`\>(`eventName`, `fn`): `void`
-
-监听事件
-
-参考[事件](./Events.md)
-
-___
-
-### off
-
-▸ **off**<`K`\>(`eventName`, `fn`): `void`
-
-取消监听事件
-
-参考[事件](./Events.md)
 
 ## 消息
 
@@ -267,6 +338,18 @@ ___
 #### Returns
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Message`](../interfaces/Message.md)\>\>\>
+
+___
+
+### getDirects
+
+▸ **getDirects**(): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Direct`](../interfaces/Direct.md)\>\>\>
+
+获取所有私聊会话
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Direct`](../interfaces/Direct.md)\>\>\>
 
 ___
 
@@ -1073,6 +1156,18 @@ ___
 
 ## 用户
 
+### getMyNodes
+
+▸ **getMyNodes**(): `Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Node`](../interfaces/Node.md)\>\>\>
+
+获取已加入及申请加入中的所有据点
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`ObjectEntries`](../interfaces/ObjectEntries.md)<[`Node`](../interfaces/Node.md)\>\>\>
+
+___
+
 ### getUserInfo
 
 ▸ **getUserInfo**(`userIdOrUsername`): `Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
@@ -1101,7 +1196,51 @@ ___
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
 
+___
+
+### modifyMeInfo
+
+▸ **modifyMeInfo**(`me`): `Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
+
+修改自身信息
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `me` | [`OutgoingMe`](../interfaces/OutgoingMe.md) | 个人资料 |
+
+#### Returns
+
+`Promise`<[`Result`](../interfaces/Result.md)<[`User`](../interfaces/User.md)\>\>
+
 ## 通用
+
+### defaultRequestOptions
+
+• `get` **defaultRequestOptions**(): `any`
+
+默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+
+#### Returns
+
+`any`
+
+• `set` **defaultRequestOptions**(`value`): `void`
+
+设置默认请求配置，参考[got Options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `value` | `any` |
+
+#### Returns
+
+`void`
+
+___
 
 ### request
 
@@ -1140,3 +1279,166 @@ ___
 #### Returns
 
 `Promise`<[`Result`](../interfaces/Result.md)<[`Stamps`](../interfaces/Stamps.md)\>\>
+
+## Other
+
+### \_emitter
+
+• `Protected` **\_emitter**: `EventEmitter`
+
+#### Inherited from
+
+BaseEmitter.\_emitter
+
+___
+
+### on
+
+▸ **on**<`K`\>(`eventName`, `fn`): `void`
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `eventName` | `K` |
+| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }[`K`]\> |
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+BaseEmitter.on
+
+___
+
+### off
+
+▸ **off**<`K`\>(`eventName`, `fn`): `void`
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `eventName` | `K` |
+| `fn` | `EventReceiver`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }[`K`]\> |
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+BaseEmitter.off
+
+___
+
+### emit
+
+▸ `Protected` **emit**<`K`\>(`eventName`, `params`): `void`
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `K` | extends `EventKey`<{ `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }\> |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `eventName` | `K` |
+| `params` | { `open`: `void` ; `close`: `void` ; `dispatch`: [`Dispatch`](../interfaces/Dispatch.md) ; `user_typing`: [`UserTyping`](../interfaces/UserTyping.md) ; `message_create`: [`Message`](../interfaces/Message.md) ; `message_delete`: [`Message`](../interfaces/Message.md) ; `message_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `thought_create`: [`Thought`](../interfaces/Thought.md) ; `thought_update`: [`Thought`](../interfaces/Thought.md) ; `thought_delete`: [`Thought`](../interfaces/Thought.md) ; `thought_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `comment_create`: [`Comment`](../interfaces/Comment.md) ; `comment_engagement`: [`Engagement`](../interfaces/Engagement.md) ; `node_member_add`: [`Member`](../interfaces/Member.md) ; `node_member_remove`: [`Member`](../interfaces/Member.md) ; `node_member_ban`: [`Member`](../interfaces/Member.md) ; `node_member_activity_change`: [`NodeMemberActivityChange`](../README.md#nodememberactivitychange)  }[`K`] |
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+BaseEmitter.emit
+
+___
+
+### \_ws
+
+• `Protected` **\_ws**: [`WsHandler`](WsHandler.md)
+
+___
+
+### \_auth
+
+• `Protected` **\_auth**: [`Auth`](../interfaces/Auth.md)
+
+___
+
+### \_defaultRequestOptions
+
+• `Protected` **\_defaultRequestOptions**: `any`
+
+___
+
+### constructor
+
+• **new MewClient**()
+
+#### Overrides
+
+BaseEmitter&lt;{
+    open: void;
+    close: void;
+    dispatch: Dispatch,
+    user\_typing: UserTyping,
+    message\_create: Message,
+    message\_delete: Message,
+    message\_engagement: Engagement,
+    thought\_create: Thought,
+    thought\_update: Thought,
+    thought\_delete: Thought,
+    thought\_engagement: Engagement,
+    comment\_create: Comment,
+    comment\_engagement: Engagement,
+    node\_member\_add: Member,
+    node\_member\_remove: Member,
+    node\_member\_ban: Member,
+    node\_member\_activity\_change: NodeMemberActivityChange,
+}\&gt;.constructor
+
+___
+
+### initWs
+
+▸ `Protected` **initWs**(): `void`
+
+#### Returns
+
+`void`
+
+___
+
+### onDispatch
+
+▸ `Protected` **onDispatch**(`dispatch`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `dispatch` | [`Dispatch`](../interfaces/Dispatch.md) |
+
+#### Returns
+
+`void`

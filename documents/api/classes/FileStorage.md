@@ -77,6 +77,8 @@ ___
 
 • `get` **config**(): `Required`<[`BotConfig`](../interfaces/BotConfig.md)\>
 
+获取bot配置
+
 #### Returns
 
 `Required`<[`BotConfig`](../interfaces/BotConfig.md)\>
@@ -90,6 +92,8 @@ ___
 ### blockList
 
 • `get` **blockList**(): `Partial`<[`User`](../interfaces/User.md)\>[]
+
+获取屏蔽列表
 
 #### Returns
 
@@ -121,6 +125,8 @@ ___
 
 ▸ **getAccount**(): `Promise`<`undefined` \| [`Account`](../interfaces/Account.md)\>
 
+获取账号信息
+
 #### Returns
 
 `Promise`<`undefined` \| [`Account`](../interfaces/Account.md)\>
@@ -134,6 +140,8 @@ ___
 ### refreshConfig
 
 ▸ **refreshConfig**(): `Promise`<`Required`<[`BotConfig`](../interfaces/BotConfig.md)\>\>
+
+刷新bot配置
 
 #### Returns
 
@@ -149,6 +157,8 @@ ___
 
 ▸ **refreshBlockList**(): `Promise`<`Partial`<[`User`](../interfaces/User.md)\>[]\>
 
+刷新屏蔽列表
+
 #### Returns
 
 `Promise`<`Partial`<[`User`](../interfaces/User.md)\>[]\>
@@ -163,11 +173,13 @@ ___
 
 ▸ **updateBlockList**(`blockList`): `Promise`<`void`\>
 
+更新屏蔽列表
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `blockList` | `Partial`<[`User`](../interfaces/User.md)\>[] |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `blockList` | `Partial`<[`User`](../interfaces/User.md)\>[] | 新的屏蔽列表 |
 
 #### Returns
 

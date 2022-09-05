@@ -94,7 +94,7 @@ ___
 
 ▸ **reply**(`to`, `message`, `messageReplyMode?`): `Promise`<[`Result`](Result.md)<[`Message`](Message.md)\>\>
 
-回复
+回复，所有replyXXX方法将会处理回复模式、添加@对方 等等
 
 #### Parameters
 
@@ -195,14 +195,16 @@ ___
 
 ▸ **replyImageWithCache**(`to`, `imageFile`, `dao`, `messageReplyMode?`): `Promise`<[`Result`](Result.md)<[`Message`](Message.md)\>\>
 
+回复图片，利用以存储的服务端图片信息，可在发送已发过的图片时，直接使用服务端图片ID，而无需重复上传图片
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `to` | [`Message`](Message.md) |
-| `imageFile` | `string` |
-| `dao` | [`IServerImageDao`](IServerImageDao.md) |
-| `messageReplyMode?` | [`MesageReplyMode`](../enums/MesageReplyMode.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `to` | [`Message`](Message.md) | 待回复消息 |
+| `imageFile` | `string` | 图片文件路径 |
+| `dao` | [`IServerImageDao`](IServerImageDao.md) | 服务端图片信息存储实现，没有默认实现，请按自己的口味实现一个。MongoDB示例：[server-image.ts](https://github.com/PamisuMyon/nanabot/blob/main/src/models/server-image.ts) |
+| `messageReplyMode?` | [`MesageReplyMode`](../enums/MesageReplyMode.md) |  |
 
 #### Returns
 
@@ -214,13 +216,15 @@ ___
 
 ▸ **sendImageWithCache**(`topic_id`, `imageFile`, `dao`): `Promise`<[`Result`](Result.md)<[`Message`](Message.md)\>\>
 
+上面那个方法的直接发送版，无需指定回复哪条消息
+
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `topic_id` | `string` |
-| `imageFile` | `string` |
-| `dao` | [`IServerImageDao`](IServerImageDao.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `topic_id` | `string` | 话题/节点ID，私聊ID |
+| `imageFile` | `string` | 图片文件路径 |
+| `dao` | [`IServerImageDao`](IServerImageDao.md) | 服务端图片信息存储实现 |
 
 #### Returns
 
