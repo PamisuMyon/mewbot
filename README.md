@@ -10,7 +10,7 @@ mewbot是一个面向[Mew Online](https://mew.fun)的Node.js库，能让您更�
 - 🔌bot所需的HTTP API，覆盖范围包括据点、话题/节点、想法、评论、消息、情绪、媒体等等
 - 📜API文档
 
-**MewBot**(WIP)实现了基础bot业务，特点：
+**MewBot**实现了基础bot业务，特点：
 
 - 🏠灵活的部署配置，功能可单独拆分至具体话题/节点，并在不同的话题/节点可以有不同的表现
 - 💡支持多种响应模式，@bot模式、回复模式、指令模式及混搭
@@ -151,7 +151,7 @@ bot.launch();
 
 MewBot启动流程、消息处理逻辑、存储：[MewBot](/documents/api/classes/MewBot.md)
 
-回复器：[Replier](documents\api\classes\Replier.md)、[MatryoshkaReplier](D:\Projects\CodeProjects\mewbot\documents\api\classes\MatryoshkaReplier.md)
+回复器：[Replier](documents\api\classes\Replier.md)、[MatryoshkaReplier](documents\api\classes\MatryoshkaReplier.md)
 
 ## 常见问题
 - [如何取得授权Token](./documents/FAQ.md#如何授权)
@@ -164,9 +164,9 @@ MewBot启动流程、消息处理逻辑、存储：[MewBot](/documents/api/class
 - [MewClient](/documents/api/classes/MewClient.md)
 - [MewBot](/documents/api/classes/MewBot.md)
 - [事件](/documents/Events.md)
-- [API Doc](/documents/api/README.md)
+- [API参考](/documents/api/README.md)
 
-API使用示例可参考测试代码：
+Mew API使用示例可参考测试代码：
 
 - 事件：[dispatch-test.ts](test/dispatch-test.ts)
 - 消息：[message.test.ts](test/message.test.ts)
@@ -231,5 +231,4 @@ npm run doc
 其他文档需要手动更新。
 
 ## TODO
-- 完善MewBot
 - 封装图片、长文、视频、链接类型的想法发送方法
