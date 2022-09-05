@@ -151,7 +151,7 @@ bot.launch();
 
 MewBot启动流程、消息处理逻辑、存储：[MewBot](/documents/api/classes/MewBot.md)
 
-回复器：[Replier](documents\api\classes\Replier.md)、[MatryoshkaReplier](documents\api\classes\MatryoshkaReplier.md)
+回复器：[Replier](documents/api/classes/Replier.md)、[MatryoshkaReplier](documents/api/classes/MatryoshkaReplier.md)
 
 ## 常见问题
 - [如何取得授权Token](./documents/FAQ.md#如何授权)
