@@ -113,6 +113,24 @@ export interface MediaImageInfo {
     id: string;
 }
 
+export interface ImageUploadUrlInfo {
+    uploadUrl: string;
+}
+
+export interface ImageDUploadResult {
+    result: {
+        id: string;
+        filename: string;
+        meta: any;
+        uploaded: string;
+        requireSignedURLs: boolean;
+        variants: string[];
+    },
+    success: boolean;
+    errors: any[];
+    messages: any[];
+}
+
 /**
  * 私聊会话信息
  */

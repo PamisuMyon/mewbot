@@ -1,9 +1,8 @@
 import WebSocket from 'ws';
 import { logger, LogLevel } from "../commons/logger.js";
-import { WsHost, getWsHeaders } from "./constants.js";
 import unescape from "../commons/unescape.js";
 import { BaseEmitter } from "../commons/base-emitter.js";
-import { Auth, ConnectOptions, ConnectStatus, Dispatch, DispatchEvent, initConnectOptions, Message, refineMessage } from './model/index.js';
+import { Auth, ConnectOptions, ConnectStatus, Dispatch, DispatchEvent, Message, refineMessage } from './model/index.js';
 
 export class WsHandler extends BaseEmitter<{
     open: void,
@@ -15,7 +14,7 @@ export class WsHandler extends BaseEmitter<{
     protected _connectStatus = ConnectStatus.None;
     protected _heartbeatCheck = -1;
 
-    connect(options: Partial<ConnectOptions>, auth?: Auth) {
+    connect(options: ConnectOptions, auth?: Auth) {
         if (this._connectStatus == ConnectStatus.Connected) {
             logger.info('Websocket already connected.');
             return;
@@ -25,15 +24,21 @@ export class WsHandler extends BaseEmitter<{
             return;
         }
 
-        const opt = initConnectOptions(options);
+        // const opt = initConnectOptions(options);  already initialized outside
+        const opt = options;
         this._connectStatus = ConnectStatus.Connecting;
         if (this._ws != null) {
             this._ws.removeAllListeners();
         }
-        this._ws = new WebSocket(WsHost, {
-            headers: getWsHeaders(),
-            handshakeTimeout: opt.handshakeTimeout
-        });
+        const wsOptions: any = {
+            headers: options.serverInfo!.getWsHeaders(),
+            handshakeTimeout: opt.handshakeTimeout,
+        };
+        if (opt.agent) {
+            wsOptions.agent = opt.agent;
+        }
+        
+        this._ws = new WebSocket(opt.serverInfo!.wsHost, wsOptions);
         
         this._ws.on('open', () => {
             logger.debug('Websocket connection open.');

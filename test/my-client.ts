@@ -1,11 +1,32 @@
 import * as fs from "fs";
-import { logger, LogLevel, MewClient } from "../src/index.js";
+import { HttpsProxyAgent } from "hpagent";
+import { ConnectOptions, logger, LogLevel, MewClient, ServerInfo } from "../src/index.js";
 
-logger.logLevel = LogLevel.Debug;
+const USE_PROXY = true;
+const PROXY = "http://localhost:7890";
+
+logger.logLevel = LogLevel.Verbose;
 const accountPath = './test/account.json';
-const client = new MewClient();
+let client: MewClient;
 
 export async function getMewClient(needAuth = true) {
+    if (!client) {
+        const options: Partial<ConnectOptions> = {
+            serverInfo: vrollServerInfo
+        };
+        if (USE_PROXY) {
+            options.agent = new HttpsProxyAgent({
+                keepAlive: true,
+                keepAliveMsecs: 1000,
+                maxSockets: 256,
+                maxFreeSockets: 256,
+                scheduling: 'lifo',
+                proxy: PROXY,
+            });
+        }
+        client = new MewClient(options);
+    }
+
     if (needAuth && !client.hasAuth) {
         if (!fs.existsSync(accountPath)) {
             logger.error('account.json not found.');
@@ -23,3 +44,30 @@ export async function getMewClient(needAuth = true) {
     }
     return client;
 }
+
+const vrollServerInfo: ServerInfo = {
+    apiHost: 'https://api.vroll.me',
+    wsHost: 'wss://gateway.vroll.me/socket.io/?EIO=4&transport=websocket',
+    getHeaders(): Record<string, any> {
+        return {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+            'Referer': 'https://vroll.me/',
+            'Origin': 'https://vroll.me',
+        };
+    },
+    getWsHeaders(): Record<string, any> {
+        return {
+            'Host': 'gateway.vroll.me',
+            'Connection': 'Upgrade',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+            'Upgrade': 'websocket',
+            'Origin': 'https://vroll.me',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+        };
+    }
+};

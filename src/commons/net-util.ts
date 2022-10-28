@@ -11,7 +11,7 @@ export class NetUtil {
 
     static async download(url: string, filePath: string, timeout = 360000) {
         try {
-            FileUtil.create(filePath);
+            await FileUtil.create(filePath);
             logger.debug('Start downloading of file: ' + url);
             const options = { 
                 timeout: { 

@@ -7,7 +7,7 @@ import { FileStorage } from "./storage/file-storage.js";
 import { MewClient } from "../mew/mew-client.js";
 import { logger } from "../commons/logger.js";
 import { Util } from "../commons/utils.js";
-import { Constants } from "../mew/constants.js";
+import { Constants } from "../mew/server_info.js";
 import { Result } from "../mew/model/common.js";
 import { Message, OutgoingMessage, MediaImageInfo } from "../mew/model/message.js";
 import { User } from "../mew/model/user.js";
@@ -473,7 +473,7 @@ export class MewBot implements IBot {
         }
         if (!info) {
             // 上传图片
-            const result = await this._client.uploadImage(imageFile);
+            const result = await this._client.uploadImage2(imageFile);
             // 记录
             if (result.data && result.data.id) {
                 info = result.data;

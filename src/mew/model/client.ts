@@ -1,5 +1,8 @@
 // Mew Client 自定义类型
 
+import { HttpsProxyAgent } from "hpagent";
+import { defaultServerInfo, ServerInfo } from "../server_info.js";
+
 /**
  * 请求时的授权模式
  */
@@ -43,6 +46,14 @@ export interface ConnectOptions {
      * 重连前的延时
      */
     reconnectTimeout: number;
+    /**
+     * ServerInfo
+     */
+    serverInfo: ServerInfo;
+    /**
+     * Agent
+     */
+    agent?: HttpsProxyAgent;
 }
 
 /**
@@ -54,6 +65,7 @@ export function initConnectOptions(options?: Partial<ConnectOptions>) : ConnectO
         handshakeTimeout: 10000,
         heartbeatCheckTimeout: 50000,
         reconnectTimeout: 100,
+        serverInfo: defaultServerInfo,
     };
     return {
         ...defaults,

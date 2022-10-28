@@ -38,7 +38,7 @@ export interface CheckResult {
 
 /**
  * 指令冷却检测
- * 使用示例参照 {@link PrimaryReplier}
+ * 使用示例参照 {@link Replier}
  */
 export class Spam {
 

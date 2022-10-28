@@ -62,4 +62,8 @@ export class FileUtil {
         }
     }
 
+    static getFileName(filePath: string) {
+        const split = filePath.split('/');
+        return split[split.length - 1];
+    }
 }

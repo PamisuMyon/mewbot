@@ -4,8 +4,9 @@ import { Stamps } from "../src/index.js";
 import { LoremIpsum, Sleeper, topics } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
-const topicId = topics["🍄"];
+// const topicId = topics["🍄"];
 // const topicId = topics["🦴"];
+const topicId = topics["🤖"];
 const sleeper = new Sleeper();
 
 describe('Send message💬', function () {
@@ -30,7 +31,7 @@ describe('Send message💬', function () {
             }
         });
     });
-    describe('Image message🖼', function () {
+    describe.only('Image message🖼', function () {
         it('should send a image message🖼💬', async function () {
             this.timeout(0);
             await sleeper.sleep();

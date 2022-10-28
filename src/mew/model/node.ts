@@ -1,7 +1,6 @@
 // 据点相关
 
-import { type } from "os";
-import { CommonObjects, ObjectEntries } from "./common.js";
+import { CommonObjects } from "./common.js";
 import { Message } from "./message.js";
 
 export interface Node {

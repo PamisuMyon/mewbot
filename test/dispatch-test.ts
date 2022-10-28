@@ -3,7 +3,8 @@ import { nodes, topics } from "./commons.js";
 import { getMewClient } from "./my-client.js";
 
 (async () => {
-    const listeningTopics = [ topics["🍄"], topics["🦴"] ];
+    // const listeningTopics = [ topics["🍄"], topics["🦴"] ];
+    const listeningTopics = [ topics["🤖"] ];
 
     logger.logLevel = LogLevel.Verbose;
     const client = await getMewClient();
@@ -18,9 +19,9 @@ import { getMewClient } from "./my-client.js";
     });
 
     client.on('dispatch', (dispatch) => {
-        // logger.debug('================');
-        // logger.debug(dispatch.event);
-        // logger.dir(dispatch.data);
+        logger.debug('================');
+        logger.debug(dispatch.event);
+        logger.dir(dispatch.data);
     });
 
     // /*
@@ -109,7 +110,8 @@ import { getMewClient } from "./my-client.js";
     // */
 
     client.connect({
-        subcriptionNodes: [nodes['🦴']],
+        // subcriptionNodes: [nodes['🦴']],
+        subcriptionNodes: [nodes["🤖"]],
         handshakeTimeout: 5000,
     });
 

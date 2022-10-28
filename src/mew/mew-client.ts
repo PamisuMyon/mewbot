@@ -1,11 +1,18 @@
 import got from "got";
-import { logger, LogLevel } from "../commons/logger.js";
-import { ApiHost, getHeaders, Constants } from "./constants.js";
+import * as fs from 'fs';
+import FormData from 'form-data';
+import { promisify } from 'util';
+import imageSize from 'image-size';
+const sizeOf = promisify(imageSize);
+import { Logger, logger, LogLevel } from "../commons/logger.js";
+import { Constants } from "./server_info.js";
 import { BaseEmitter } from "../commons/base-emitter.js";
 import { Util } from "../commons/utils.js";
 import { WsHandler } from "./ws-handler.js";
 import { imagex } from "@volcengine/openapi";
-import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct, ObjectEntries, OutgoingMe, refineMessage } from "./model/index.js";
+import { Auth, AuthMode, ConnectOptions, Dispatch, DispatchEvent, Message, MediaImageInfo, Node, OutgoingMessage, Result, Stamps, STSToken, Topic, User, UserTyping, Thoughts, OutgoingThought, Thought, Embed, Comments, Comment, OutgoingComment, OutgoingNode, Member, Engagement, NodeMemberActivityChange, OutgoingTopic, Direct, ObjectEntries, OutgoingMe, refineMessage, initConnectOptions, ImageUploadUrlInfo, ImageDUploadResult } from "./model/index.js";
+import mime from "mime";
+import { FileUtil } from "../commons/file-util.js";
 
 /**
  * - [授权](MewClient.md#授权)
@@ -70,6 +77,19 @@ export class MewClient extends BaseEmitter<{
      * @category 通用
      */
     get defaultRequestOptions() {
+        if (this._connectOptions.agent) {
+            return {
+                ...this._defaultRequestOptions,
+                ...{
+                    https: {
+                        rejectUnauthorized: false,
+                    },
+                    agent: {
+                        https: this._connectOptions.agent
+                    }
+                }
+            };
+        }
         return this._defaultRequestOptions;
     }
     /**
@@ -80,8 +100,22 @@ export class MewClient extends BaseEmitter<{
         this._defaultRequestOptions = value;
     }
 
-    constructor() {
+
+    protected _connectOptions!: ConnectOptions;
+    public set connectOptions(value: Partial<ConnectOptions>) {
+        this._connectOptions = initConnectOptions(value);
+    }
+    public get connectOptions(): ConnectOptions {
+        return this._connectOptions;
+    }
+    protected get serverInfo() {
+        return this._connectOptions.serverInfo;
+    }
+
+
+    constructor(options?: Partial<ConnectOptions>) {
         super();
+        this.connectOptions = initConnectOptions(options);
         this.initWs();
     }
 
@@ -147,8 +181,13 @@ export class MewClient extends BaseEmitter<{
      * @category 连接
      * @param options 连接选项 
      */
-    connect(options: Partial<ConnectOptions>) {
-        this._ws.connect(options, this._auth);
+    connect(options?: Partial<ConnectOptions>) {
+        if (options)
+            this.connectOptions = {
+                ...this._connectOptions,
+                ...options,
+            };
+        this._ws.connect(this._connectOptions, this._auth);
     }
 
     /**
@@ -181,11 +220,11 @@ export class MewClient extends BaseEmitter<{
      */
     async request<T>(url: string, options?: any, authMode = AuthMode.NeedAuth): Promise<Result<T>> {
         options = {
-            ...this._defaultRequestOptions,
+            ...this.defaultRequestOptions,
             ...options
         };
         options.headers = {
-            ...getHeaders(),
+            ...this.serverInfo.getHeaders(),
             ...options.headers,
         };
         if (authMode == AuthMode.NeedAuth) {
@@ -203,6 +242,7 @@ export class MewClient extends BaseEmitter<{
             logger.debug(`${options.method} ${url}`);
             const { body } = await got<T>(url, options);
             logger.debug(`${options.method} Responsed ${url}`);
+            logger.dir(body, LogLevel.Verbose);
             return { data: body };
         } catch (err: any) {
             logger.error('Request error.');
@@ -239,7 +279,7 @@ export class MewClient extends BaseEmitter<{
      * @param password 密码
      */
     async login(username: string, password: string) {
-        const url = ApiHost + '/api/v1/auth/login';
+        const url = this.serverInfo.apiHost + '/api/v1/auth/login';
         const options: any = {
             method: 'POST',
             json: {
@@ -260,7 +300,7 @@ export class MewClient extends BaseEmitter<{
      * @param message 消息 参考{@link OutgoingMessage}
      */
     async sendMessage(topic_id: string, message: OutgoingMessage) {
-        const url = ApiHost + `/api/v1/topics/${topic_id}/messages`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}/messages`;
         message.nonce = Util.nonce();
         const options: any = {
             method: 'POST',
@@ -343,7 +383,8 @@ export class MewClient extends BaseEmitter<{
      * @param replyToMessageId 要回复的消息id
      */
     async sendImageMessage(topic_id: string, filePath: string, replyToMessageId?: string) {
-        const info = await this.uploadImage(filePath);
+        // const info = await this.uploadImage(filePath);
+        const info = await this.uploadImage2(filePath);
         if (info.data) {
             return await this.sendMessage(topic_id, {
                 media: [info.data.id],
@@ -394,7 +435,7 @@ export class MewClient extends BaseEmitter<{
      * @category 媒体
      */
     async stsToken() {
-        const url = ApiHost + '/api/v1/medias/image/STSToken';
+        const url = this.serverInfo.apiHost + '/api/v1/medias/image/STSToken';
         return await this.request<STSToken>(url);
     }
 
@@ -440,8 +481,67 @@ export class MewClient extends BaseEmitter<{
      * @param imageUri 图片uri
      */
     async getImageInfo(imageUri: string) {
-        const url = ApiHost + '/api/v1/medias/image/' + imageUri.replace('/', '%2F');
+        const url = this.serverInfo.apiHost + '/api/v1/medias/image/' + imageUri.replace('/', '%2F');
         return await this.request<MediaImageInfo>(url, { method: 'POST' });
+    }
+
+    // #endregion Image upload
+
+    // #region Image upload
+
+    async uploadImage2(filePath: string, retry = 2, retryInterval = 200) {
+        // Get upload url
+        const url1 = this.serverInfo.apiHost + '/api/v1/medias/image/url';
+        const r1 = await this.request<ImageUploadUrlInfo>(url1);
+        if (r1.error) return { error: r1.error };
+
+        // Upload
+        let isUploadSuccess = false;
+        let uploadResult: ImageDUploadResult;
+        do {
+            const url2 = r1.data!.uploadUrl;
+            const form = new FormData();
+            form.append('file', fs.createReadStream(filePath), {filename: FileUtil.getFileName(filePath), contentType: mime.getType(filePath)! });
+            const options: any = {
+                headers: this.serverInfo.getHeaders(),
+                body: form,
+                responseType: 'json',
+            };
+            if (this._connectOptions.agent) {
+                options.https = {
+                    rejectUnauthorized: false,
+                };
+                options.agent = {
+                    https: this._connectOptions.agent
+                };
+            }
+            logger.debug(`Image Upload: ${url2}`);
+            const { body } = await got.post<ImageDUploadResult>(url2, options);
+            logger.debug(`Image Upload Responsed.`);
+            logger.dir(body, LogLevel.Verbose);
+            if (body.result && body.result.id) {
+                isUploadSuccess = true;
+                uploadResult = body;
+            }
+            else {
+                retry--;
+                logger.debug(`Image Upload Failed, Retrying...`);
+                await Util.sleep(retryInterval);
+            }
+        } while (!isUploadSuccess && retry > 0);
+        if (!isUploadSuccess)
+            return { error: { name: "Image Upload Error" } };
+            
+        // Post media info
+        const url3 = this.serverInfo.apiHost + '/api/v1/medias';
+        const dimensions = await sizeOf(filePath);
+        const data = {
+            type: 'IMAGE',
+            externalId: uploadResult!.result.id,
+            height: dimensions?.height,
+            width: dimensions?.width,
+        };
+        return await this.request<MediaImageInfo>(url3, { method: 'POST', json: data });
     }
 
     // #endregion Image upload
@@ -456,7 +556,7 @@ export class MewClient extends BaseEmitter<{
      * @param after 消息id，获取该条消息之后的消息
      */
     async getTopicMessages(topic_id: string, limit = 50, before?: string, after?: string) {
-        let url = ApiHost + `/api/v1/topics/${topic_id}/messages?limit=${limit}`;
+        let url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}/messages?limit=${limit}`;
         if (before)
             url += `&before=${before}`;
         if (after)
@@ -469,7 +569,7 @@ export class MewClient extends BaseEmitter<{
      * @category 消息
      */
     async getDirects() {
-        const url = ApiHost + `/api/v1/users/@me/directs`;
+        const url = this.serverInfo.apiHost + `/api/v1/users/@me/directs`;
         return await this.request<ObjectEntries<Direct>>(url);
     }
 
@@ -479,7 +579,7 @@ export class MewClient extends BaseEmitter<{
      * @param userIdOrUsername 用户id或用户Mew ID（账号）
      */
     async getDirect(userIdOrUsername: string) {
-        const url = ApiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
+        const url = this.serverInfo.apiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
         return await this.request<Direct>(url);
     }
 
@@ -490,7 +590,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteDirect(userIdOrUsername: string) {
-        const url = ApiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
+        const url = this.serverInfo.apiHost + `/api/v1/users/@me/directs/${userIdOrUsername}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -504,7 +604,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async readMessage(topic_id: string, message_id: string) {
-        const url = ApiHost + `/api/v1/topics/${topic_id}/messages/${message_id}/ack`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}/messages/${message_id}/ack`;
         return await this.request<string>(url, { method: 'PATCH', responseType: 'text' });
     }
 
@@ -515,7 +615,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteMessage(message_id: string) {
-        const url = ApiHost + `/api/v1/messages/${message_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/messages/${message_id}`;
         return await this.request<string>(url, { method: 'DELETE', responseType: 'text' });
     }
 
@@ -526,7 +626,7 @@ export class MewClient extends BaseEmitter<{
      * @param stamp_id 表情id
      */
     async addMessageReaction(message_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/messages/${message_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/messages/${message_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'POST' });
     }
 
@@ -538,7 +638,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteMessageReaction(message_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/messages/${message_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/messages/${message_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -550,7 +650,7 @@ export class MewClient extends BaseEmitter<{
      * @param sort 排序类型，默认为‘reply’ 按最后回复时间排序
      */
     async getNodeThoutghts(node_id: string, limit = 20, sort = 'reply') {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/thoughts?limit=${limit}&sort=${sort}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/thoughts?limit=${limit}&sort=${sort}`;
         return await this.request<Thoughts>(url, null, AuthMode.Free);
     }
 
@@ -562,7 +662,7 @@ export class MewClient extends BaseEmitter<{
      * @param sort 排序类型，默认为‘reply’ 按最后回复时间排序
      */
     async getTopicThoughts(topic_id: string, limit = 20, sort = 'reply') {
-        const url = ApiHost + `/api/v1/topics/${topic_id}/thoughts?limit=${limit}&sort=${sort}`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}/thoughts?limit=${limit}&sort=${sort}`;
         return await this.request<Thoughts>(url, null, AuthMode.Free);
     }
 
@@ -572,7 +672,7 @@ export class MewClient extends BaseEmitter<{
      * @param thought_id 想法id 
      */
     async getThought(thought_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}`;
         return await this.request<Thought>(url, null, AuthMode.Free);
     }
 
@@ -583,7 +683,7 @@ export class MewClient extends BaseEmitter<{
      * @param thought 想法，参考{@link OutgoingThought}
      */
     async postThought(topic_id: string, thought: OutgoingThought) {
-        const url = ApiHost + `/api/v1/topics/${topic_id}/thoughts`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}/thoughts`;
         const options: any = {
             method: 'POST',
             json: thought,
@@ -610,7 +710,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteThought(thought_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -620,7 +720,7 @@ export class MewClient extends BaseEmitter<{
      * @param embedUrl 链接
      */
     async embeds(embedUrl: string) {
-        const url = ApiHost + '/api/v1/embeds';
+        const url = this.serverInfo.apiHost + '/api/v1/embeds';
         const options: any = {
             method: 'POST',
             json: { url: embedUrl },
@@ -636,7 +736,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async addThoughtReaction(thought_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'POST' });
     }
 
@@ -648,7 +748,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteThoughtReaction(thought_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -661,7 +761,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async sinkThought(thought_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/sink`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/sink`;
         const options: any = {
             method: 'POST',
             json: { sink: true },
@@ -678,7 +778,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async unsinkThought(thought_id: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/sink`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/sink`;
         const options: any = {
             method: 'POST',
             json: { sink: false },
@@ -695,7 +795,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async moveThought(thought_id: string, topicId: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/move`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/move`;
         const options: any = {
             method: 'PATCH',
             json: { topicId },
@@ -716,7 +816,7 @@ export class MewClient extends BaseEmitter<{
      * @param after 评论id，获取该条评论之前的消评论，
      */
     async getComments(thought_id: string, limit = 20, before?: string, after?: string) {
-        let url = ApiHost + `/api/v1/thoughts/${thought_id}/comments?limit=${limit}`;
+        let url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/comments?limit=${limit}`;
         if (before)
             url += `&before=${before}`;
         if (after)
@@ -745,7 +845,7 @@ export class MewClient extends BaseEmitter<{
     async postComment(thought_id: string, comment: OutgoingComment): Promise<Result<Comment>>;
 
     async postComment(thought_id: string, comment: OutgoingComment | string, imageFile?: string, parentId?: string) {
-        const url = ApiHost + `/api/v1/thoughts/${thought_id}/comments`;
+        const url = this.serverInfo.apiHost + `/api/v1/thoughts/${thought_id}/comments`;
         let options: any;
         if (typeof(comment) == 'string') {
             const data: OutgoingComment = {
@@ -753,7 +853,7 @@ export class MewClient extends BaseEmitter<{
                 parentId
             };
             if (imageFile) {
-                const image = await this.uploadImage(imageFile);
+                const image = await this.uploadImage2(imageFile);
                 if (image.data) {
                     data.media = image.data.id;
                 } else {
@@ -781,7 +881,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteComment(comment_id: string) {
-        const url = ApiHost + `/api/v1/comments/${comment_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/comments/${comment_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -793,7 +893,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async addCommentReaction(comment_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'POST' });
     }
 
@@ -805,7 +905,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteCommentReaction(comment_id: string, stamp_id: string) {
-        const url = ApiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/comments/${comment_id}/reaction/${stamp_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -814,7 +914,7 @@ export class MewClient extends BaseEmitter<{
      * @category 用户
      */
     async getMyNodes() {
-        const url = ApiHost + `/api/v1/users/@me/mynodes`;
+        const url = this.serverInfo.apiHost + `/api/v1/users/@me/mynodes`;
         return await this.request<ObjectEntries<Node>>(url);
     }
 
@@ -824,7 +924,7 @@ export class MewClient extends BaseEmitter<{
      * @param node_id 据点id （数字或英文id，非MewCode）
      */
     async getNodeInfo(node_id: string) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}`;
         return await this.request<Node>(url, null, AuthMode.Free);
     }
 
@@ -837,7 +937,7 @@ export class MewClient extends BaseEmitter<{
      * @param info 据点信息
      */
     async modifyNodeInfo(node_id: string, info: OutgoingNode) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}`;
         const options: any = {
             method: 'PATCH',
             json: info,
@@ -856,7 +956,7 @@ export class MewClient extends BaseEmitter<{
      * @param limit 数量
      */
     async getNodeMembers(node_id: string, after?: string, before?: string, userWithRelationship = false, type?: string, limit = 50) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/members?limit=${limit}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/members?limit=${limit}`;
         const options: any = {
             method: 'GET',
             searchParams: {
@@ -877,7 +977,7 @@ export class MewClient extends BaseEmitter<{
      * @param user_id 用户id
      */
     async getNodeMember(node_id: string, user_id: string) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
         return await this.request<ObjectEntries<Member>>(url, { method: 'GET'});
     }
 
@@ -896,7 +996,7 @@ export class MewClient extends BaseEmitter<{
      * @param permissions_deny 禁用的权限Flag 使用位运算组合 参照{@link PermissionFlag}, 传入0解除所有限制
      */
     async modifyNodeMemberPermission(node_id: string, user_id: string, permissions_deny: number) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
         const options: any = {
             method: 'PATCH',
             json: {
@@ -916,7 +1016,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async deleteNodeMember(node_id: string, user_id: string) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/members/${user_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -931,7 +1031,7 @@ export class MewClient extends BaseEmitter<{
      * @param limit 数量
      */
     async getNodeBans(node_id: string, after?: string, before?: string, limit = 50) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/bans`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/bans`;
         const options: any = {
             method: 'GET',
             searchParams: {
@@ -953,7 +1053,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async banNodeMember(node_id: string, user_id: string) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
         return await this.request<string>(url, { method: 'PUT' });
     }
 
@@ -967,7 +1067,7 @@ export class MewClient extends BaseEmitter<{
      * @returns 返回data为空字符串代表成功
      */
     async unbanNodeMember(node_id: string, user_id: string) {
-        const url = ApiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/nodes/${node_id}/bans/${user_id}`;
         return await this.request<string>(url, { method: 'DELETE' });
     }
 
@@ -977,7 +1077,7 @@ export class MewClient extends BaseEmitter<{
      * @param topic_id 话题/节点id 
      */
     async getTopicInfo(topic_id: string) {
-        const url = ApiHost + `/api/v1/topics/${topic_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}`;
         return await this.request<Topic>(url, null, AuthMode.Free);
     }
 
@@ -990,7 +1090,7 @@ export class MewClient extends BaseEmitter<{
      * @param info 话题/节点信息
      */
     async modifyTopicInfo(topic_id: string, info: OutgoingTopic) {
-        const url = ApiHost + `/api/v1/topics/${topic_id}`;
+        const url = this.serverInfo.apiHost + `/api/v1/topics/${topic_id}`;
         const options: any = {
             method: 'PATCH',
             json: info,
@@ -1004,7 +1104,7 @@ export class MewClient extends BaseEmitter<{
      * @param userIdOrUsername 用户id或用户Mew ID（账号） 
      */
     async getUserInfo(userIdOrUsername: string) {
-        const url = ApiHost + `/api/v1/users/${userIdOrUsername}`;
+        const url = this.serverInfo.apiHost + `/api/v1/users/${userIdOrUsername}`;
         return await this.request<User>(url, null, AuthMode.NoAuth);
     }
 
@@ -1013,7 +1113,7 @@ export class MewClient extends BaseEmitter<{
      * @category 用户
      */
     async getMeInfo() {
-        const url = ApiHost + '/api/v1/users/@me';
+        const url = this.serverInfo.apiHost + '/api/v1/users/@me';
         return await this.request<User>(url);
     }
 
@@ -1023,7 +1123,7 @@ export class MewClient extends BaseEmitter<{
      * @param me 个人资料
      */
     async modifyMeInfo(me: OutgoingMe) {
-        const url = ApiHost + '/api/v1/users/@me';
+        const url = this.serverInfo.apiHost + '/api/v1/users/@me';
         const options: any = {
             method: 'PATCH',
             json: me,
@@ -1036,7 +1136,7 @@ export class MewClient extends BaseEmitter<{
      * @category 通用
      */
     async getStamps() {
-        const url = ApiHost + '/api/v1/stamps';
+        const url = this.serverInfo.apiHost + '/api/v1/stamps';
         return await this.request<Stamps>(url);
     }
 
